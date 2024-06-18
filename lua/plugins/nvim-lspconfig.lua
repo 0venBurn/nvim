@@ -33,6 +33,8 @@ return {
 				"rubocop",
 				"html",
 				"gradle_ls",
+				"dockerls",
+				"docker_compose_language_service",
 				"lua_ls",
 				"jdtls",
 				"jsonls",
