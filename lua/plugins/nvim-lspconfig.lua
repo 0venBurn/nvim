@@ -82,7 +82,7 @@ return {
 			function(server_name)
 				-- Don't call setup for JDTLS Java LSP because it will be setup from a separate config
 				if server_name ~= "jdtls" then
-					local python_path = "/Users/evanmac/venv/nvim/bin/python"
+					local python_path = "/Users/evanmac/miniconda3/envs/nvim/bin/python"
 					local cmd = { python_path, "--stdio" }
 					lspconfig[server_name].setup({
 						cmd = cmd,
