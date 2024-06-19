@@ -59,9 +59,11 @@ return {
 				"java-debug-adapter",
 				"java-test",
 				"black",
+				"pylint",
 				"eslint_d",
 				"prettier",
 				"isort",
+				"pylint",
 				"goimports",
 				"revive",
 			},
@@ -77,15 +79,28 @@ return {
 			-- Create your keybindings here...
 		end
 
-		-- Call setup on each LSP server
 		require("mason-lspconfig").setup_handlers({
 			function(server_name)
 				-- Don't call setup for JDTLS Java LSP because it will be setup from a separate config
 				if server_name ~= "jdtls" then
-					local python_path = "/Users/evanmac/miniconda3/envs/nvim/bin/python"
-					local cmd = { python_path, "--stdio" }
+					local util = require("lspconfig/util")
+					local path = util.path
+					local default_venv_path = path.join(vim.env.HOME, "miniconda3", "envs", "nvim", "bin", "python")
+
+					if server_name == "pyright" then
+						local cmd = { default_venv_path, "--stdio" }
+						lspconfig[server_name].setup({
+							cmd = cmd,
+							on_attach = lsp_attach,
+							capabilities = lsp_capabilities,
+							before_init = function(_, config)
+								config.settings.python.pythonPath = default_venv_path
+							end,
+						})
+					else
+					end
+
 					lspconfig[server_name].setup({
-						cmd = cmd,
 						on_attach = lsp_attach,
 						capabilities = lsp_capabilities,
 					})
