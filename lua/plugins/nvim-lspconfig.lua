@@ -29,6 +29,7 @@ return {
 			-- Install these LSPs automatically
 			ensure_installed = {
 				"bashls",
+				"clangd",
 				"cssls",
 				"rubocop",
 				"html",
@@ -43,6 +44,7 @@ return {
 				"svelte",
 				"lemminx",
 				"nginx_language_server",
+				"ruff_lsp",
 				"marksman",
 				"quick_lint_js",
 				"yamlls",
@@ -64,8 +66,12 @@ return {
 				"prettier",
 				"isort",
 				"pylint",
+				"flake8",
 				"goimports",
+				"hadolint",
 				"revive",
+				"ast-grep",
+				"bacon",
 			},
 		})
 
@@ -121,6 +127,21 @@ return {
 					end,
 				})
 			end,
+			["rust_analyzer"] = function()
+				-- configure rust_analyzer to use Clippy
+				lspconfig["rust_analyzer"].setup({
+					on_attach = lsp_attach,
+					capabilities = lsp_capabilities,
+					settings = {
+						["rust-analyzer"] = {
+							checkOnSave = {
+								command = "clippy",
+							},
+						},
+					},
+				})
+			end,
+
 			["emmet_ls"] = function()
 				-- configure emmet language server
 				lspconfig["emmet_ls"].setup({

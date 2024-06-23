@@ -15,11 +15,12 @@ return {
 			svelte = { "eslint_d" },
 			go = { "revive" },
 			ruby = { "rubocop" },
-			python = { "pylint" },
+			python = { "flake8" },
+			Dockerfile = { "hadolint" },
 		}
 
 		require("lint").linters.pylint.cmd = "python"
-		require("lint").linters.pylint.args = { "-m", "pylint", "-f", "json" }
+		require("lint").linters.pylint.args = { "-m", "flake8", "-f", "json" }
 
 		-- Configure eslint
 		eslint.args = {

@@ -22,6 +22,7 @@ return {
 				python = { "isort", "black" },
 				go = { "goimports" },
 				ruby = { "rubyfmt" },
+				rust = { "rustfmt" },
 			},
 			format_on_save = {
 				lsp_fallback = true,

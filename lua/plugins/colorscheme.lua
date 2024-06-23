@@ -5,8 +5,12 @@ return {
 	priority = 1000, -- Load the colorscheme before other non-lazy-loaded plugins
 	opts = {
 		-- Replace this with your scheme-specific settings or remove to use the defaults
-		-- transparent = true,
+		transparent = true,
 		style = "night", -- other variations "storm, night, moon, day"
+		styles = {
+			sidebars = "transparent",
+			floats = "transparent",
+		},
 	},
 	config = function(_, opts)
 		require("tokyonight").setup(opts) -- Replace this with your favorite colorscheme
@@ -14,14 +18,42 @@ return {
 	end,
 }
 -- return {
--- 	-- https://github.com/olimorris/onedarkpro.nvim
--- 	"olimorris/onedarkpro.nvim",
--- 	lazy = false, -- We want the colorscheme to load immediately when starting Neovim
--- 	priority = 1000, -- Load the colorscheme before other non-lazy-loaded plugins
--- 	opts = {
--- 		-- Replace this with your scheme-specific settings or remove to use the defaults
--- 		-- transparent = true,
--- 		cursorline = "#FF000", -- other variations: onelight, onedark_vivid, onedark_dark
+-- 	"Alexis12119/nightly.nvim",
+-- 	lazy = false,
+-- 	priority = 1000,
+-- 	config = function()
+-- 		require("nightly").setup({
+-- 			transparent = true,
+-- 			styles = {
+-- 				comments = { italic = true },
+-- 				functions = { italic = false },
+-- 				variables = { italic = false },
+-- 				keywords = { italic = false },
+-- 			},
+-- 			highlights = {},
+-- 		})
+-- 		vim.cmd.colorscheme("nightly")
+-- 	end,
+-- }
+-- -- -- return {
+
+-- -- 	"rose-pine/neovim",
+-- -- 	lazy = false,
+-- -- 	priority = 1000,
+-- -- 	config = function()
+-- -- 		vim.cmd.colorscheme("rosepine")
+-- -- 	end,
+-- -- }
+
+-- -- return {
+-- -- 	-- https://github.com/olimorris/onedarkpro.nvim
+-- -- 	"olimorris/onedarkpro.nvim",
+-- -- 	lazy = false, -- We want the colorscheme to load immediately when starting Neovim
+-- -- 	priority = 1000, -- Load the colorscheme before other non-lazy-loaded plugins
+-- -- 	opts = {
+-- -- 		-- Replace this with your scheme-specific settings or remove to use the defaults
+-- -- 		-- transparent = true,
+-- -- 		cursorline = "#FF000", -- other variations: onelight, onedark_vivid, onedark_dark
 -- 	},
 -- 	config = function(_, opts)
 -- 		require("onedarkpro").setup(opts) -- Set up one dark pro with specified options
