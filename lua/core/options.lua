@@ -6,7 +6,6 @@ opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,te
 -- Line Numbers
 opt.relativenumber = true
 opt.number = true
-
 -- Tabs & Indentation
 opt.tabstop = 2
 opt.shiftwidth = 2
@@ -31,6 +30,11 @@ opt.signcolumn = "yes"
 vim.diagnostic.config({
 	float = { border = "rounded" }, -- add border to diagnostic popups
 })
+
+opt.scrolloff = 8
+opt.updatetime = 50
+opt.hlsearch = false
+opt.incsearch = true
 
 -- Backspace
 opt.backspace = "indent,eol,start"

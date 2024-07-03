@@ -1,22 +1,22 @@
-return {
-	-- https://github.com/folke/tokyonight.nvim
-	"folke/tokyonight.nvim", -- You can replace this with your favorite colorscheme
-	lazy = false, -- We want the colorscheme to load immediately when starting Neovim
-	priority = 1000, -- Load the colorscheme before other non-lazy-loaded plugins
-	opts = {
-		-- Replace this with your scheme-specific settings or remove to use the defaults
-		transparent = true,
-		style = "night", -- other variations "storm, night, moon, day"
-		styles = {
-			sidebars = "transparent",
-			floats = "transparent",
-		},
-	},
-	config = function(_, opts)
-		require("tokyonight").setup(opts) -- Replace this with your favorite colorscheme
-		vim.cmd("colorscheme tokyonight") -- Replace this with your favorite colorscheme
-	end,
-}
+-- return {
+-- 	-- https://github.com/folke/tokyonight.nvim
+-- 	"folke/tokyonight.nvim", -- You can replace this with your favorite colorscheme
+-- 	lazy = false, -- We want the colorscheme to load immediately when starting Neovim
+-- 	priority = 1000, -- Load the colorscheme before other non-lazy-loaded plugins
+-- 	opts = {
+-- 		-- Replace this with your scheme-specific settings or remove to use the defaults
+-- 		transparent = true,
+-- 		style = "night", -- other variations "storm, night, moon, day"
+-- 		styles = {
+-- 			sidebars = "transparent",
+-- 			floats = "transparent",
+-- 		},
+-- 	},
+-- 	config = function(_, opts)
+-- 		require("tokyonight").setup(opts) -- Replace this with your favorite colorscheme
+-- 		vim.cmd("colorscheme tokyonight") -- Replace this with your favorite colorscheme
+-- 	end,
+-- }
 -- return {
 -- 	"Alexis12119/nightly.nvim",
 -- 	lazy = false,
@@ -45,22 +45,23 @@ return {
 -- -- 	end,
 -- -- }
 
--- -- return {
--- -- 	-- https://github.com/olimorris/onedarkpro.nvim
--- -- 	"olimorris/onedarkpro.nvim",
--- -- 	lazy = false, -- We want the colorscheme to load immediately when starting Neovim
--- -- 	priority = 1000, -- Load the colorscheme before other non-lazy-loaded plugins
--- -- 	opts = {
--- -- 		-- Replace this with your scheme-specific settings or remove to use the defaults
--- -- 		-- transparent = true,
--- -- 		cursorline = "#FF000", -- other variations: onelight, onedark_vivid, onedark_dark
--- 	},
--- 	config = function(_, opts)
--- 		require("onedarkpro").setup(opts) -- Set up one dark pro with specified options
--- 		vim.cmd("colorscheme onedark") -- Apply the colorscheme
--- 	end,
--- }
-
+return {
+	"olimorris/onedarkpro.nvim",
+	lazy = false, -- We want the colorscheme to load immediately when starting Neovim
+	priority = 1000, -- Load the colorscheme before other non-lazy-loaded plugins
+	opts = {
+		cursorline = "#FF0000", -- other variations: onelight, onedark_vivid, onedark_dark
+	},
+	config = function(_, opts)
+		require("onedarkpro").setup({
+			options = {
+				transparency = true, -- Enable transparency here
+			},
+			cursorline = "#FF0000", -- You can also specify cursorline color here if needed
+		})
+		vim.cmd("colorscheme onedark") -- Apply the colorscheme
+	end,
+}
 -- Catppuccin Theme
 -- return {
 --   -- https://github.com/catppuccin/nvim

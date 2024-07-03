@@ -11,10 +11,23 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 vim.opt.rtp:prepend(lazypath)
-
 -- This has to be set before initializing lazy
-vim.g.mapleader = " "
+-- Define an autocommand group
+local augroup_name = "MyHighlightYankGroup"
+vim.api.nvim_exec([[
+  augroup !]] .. augroup_name .. [[
+    autocmd!
+]], false)
 
+-- Add the autocommand
+vim.api.nvim_exec(
+	[[
+  autocmd TextYankPost * silent lua vim.highlight.on_yank({higroup="IncSearch", timeout=150})
+]],
+	false
+)
+vim.g.mapleader = " "
+vim.g.highlightedyank_highlight_duration = 1000
 vim.g.python3_host_prog = "/Users/evanmac/miniconda3/envs/nvim/bin/python"
 -- Initialize lazy with dynamic loading of anything in the plugins directory
 require("lazy").setup("plugins", {
