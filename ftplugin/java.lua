@@ -55,6 +55,12 @@ local config = {
 		java = {
 			-- TODO Replace this with the absolute path to your main java version (JDK 17 or higher)
 			home = "/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home",
+
+			inlayHints = {
+				parameterNames = {
+					enabled = "all",
+				},
+			},
 			eclipse = {
 				downloadSources = true,
 			},
@@ -65,7 +71,7 @@ local config = {
 				runtimes = {
 					{
 						name = "JavaSE-17",
-						path = "/Library/Java/JavaVirtualMachines/jdk-17.jdk",
+						path = "/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home",
 					},
 				},
 			},

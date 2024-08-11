@@ -19,8 +19,8 @@ return {
 			Dockerfile = { "hadolint" },
 		}
 
-		require("lint").linters.pylint.cmd = "python"
-		require("lint").linters.pylint.args = { "-m", "ruff", "-f", "json" }
+		require("lint").linters.ruff.cmd = "python"
+		require("lint").linters.ruff.args = { "-m", "ruff", "-f", "json" }
 
 		-- Configure eslint
 		eslint.args = {
