@@ -67,7 +67,7 @@ end)
 
 -- Git
 keymap.set("n", "<leader>gb", ":GitBlameToggle<CR>") -- toggle git blame
-keymap.set("n", "<leader>lg", ":LazyGit<CR>")
+keymap.set("n", "<leader>git", ":LazyGit<CR>")
 
 -- Harpoon
 keymap.set("n", "<leader>na", require("harpoon.mark").add_file)

@@ -151,6 +151,7 @@ return {
 						"typescriptreact",
 						"javascriptreact",
 						"css",
+						"tailwindcss",
 						"sass",
 						"scss",
 						"less",
