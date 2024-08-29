@@ -5,26 +5,33 @@ return {
 		local lint = require("lint")
 		local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
 		local eslint = lint.linters.eslint_d
-
-		-- Path to your Python virtual environment
 		lint.linters_by_ft = {
-			javascript = { "eslint_d" },
+			javascript = { "eslint_d", "eslint" },
 			typescript = { "eslint_d" },
 			javascriptreact = { "eslint_d" },
 			typescriptreact = { "eslint_d" },
 			svelte = { "eslint_d" },
 			go = { "revive" },
-			ruby = { "rubocop" },
-			python = { "ruff" },
+			ruby = { "standardrb" },
 			Dockerfile = { "hadolint" },
+			python = { "ruff" }, -- Add both Ruff and MyPy for Python
 		}
 
-		require("lint").linters.ruff.cmd = "python"
-		require("lint").linters.ruff.args = { "-m", "ruff", "-f", "json" }
+		-- Configuration for Ruff
+		require("lint").linters.ruff.cmd = "ruff"
+		require("lint").linters.ruff.args = {
+			"check",
+			"--format",
+			"json",
+			"-",
+			"--stdin-filename",
+			function(params)
+				return params.filename
+			end,
+		}
 
-		-- Configure eslint
+		-- Existing ESLint configuration
 		eslint.args = {
-			"--no-warn-ignored",
 			"--format",
 			"json",
 			"--stdin",
@@ -34,7 +41,6 @@ return {
 			end,
 		}
 
-		-- Set up autocommands
 		vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
 			group = lint_augroup,
 			callback = function()
@@ -42,8 +48,7 @@ return {
 			end,
 		})
 
-		-- Set up key mapping to manually trigger linting
-		vim.keymap.set("n", "<leader>Li", function()
+		vim.keymap.set("n", "§", function()
 			lint.try_lint()
 		end, { desc = "Trigger linting for current file" })
 	end,

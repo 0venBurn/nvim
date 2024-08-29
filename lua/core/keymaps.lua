@@ -9,7 +9,13 @@ keymap.set("n", "<leader>wq", ":wq<CR>") -- save and quit
 keymap.set("n", "<leader>qq", ":q!<CR>") -- quit without saving
 keymap.set("n", "<leader>ww", ":w<CR>") -- save
 keymap.set("n", "gx", ":!open <c-r><c-a><CR>") -- open URL under cursor
+-- Move current line or selected lines up
+keymap.set("n", "K", ":move .-2<CR>==", { noremap = true, silent = true })
+keymap.set("v", "K", ":move '<-2<CR>gv=gv", { noremap = true, silent = true })
 
+-- Move current line or selected lines down
+keymap.set("n", "J", ":move .+1<CR>==", { noremap = true, silent = true })
+keymap.set("v", "J", ":move '>+1<CR>gv=gv", { noremap = true, silent = true })
 -- Split window management
 keymap.set("n", "<leader>sv", "<C-w>v") -- split window vertically
 keymap.set("n", "<leader>sh", "<C-w>s") -- split window horizontally
@@ -25,10 +31,12 @@ keymap.set("n", "<leader>to", ":tabnew<CR>") -- open a new tab
 keymap.set("n", "<leader>tx", ":tabclose<CR>") -- close a tab
 keymap.set("n", "<leader>tn", ":tabn<CR>") -- next tab
 keymap.set("n", "<leader>tp", ":tabp<CR>") -- previous tab
-keymap.set("n", "<leader>h", "<C-W>h")
-keymap.set("n", "<leader>j", "<C-W>j")
-keymap.set("n", "<leader>k", "<C-W>k")
-keymap.set("n", "<leader>l", "<C-W>l")
+
+keymap.set("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>")
+keymap.set("n", "<C-j>", "<cmd>TmuxNavigateDown<CR>")
+keymap.set("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>")
+keymap.set("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>")
+keymap.set("n", "<C-\\>", "<cmd>TmuxNavigatePrevious<CR>")
 
 -- Diff keymaps
 keymap.set("n", "<leader>cc", ":diffput<CR>") -- put diff from current to other during diff
