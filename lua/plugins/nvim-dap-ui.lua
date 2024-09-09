@@ -1,16 +1,28 @@
 -- Debugging Support
 return {
-	-- https://github.com/rcarriga/nvim-dap-ui
 	"rcarriga/nvim-dap-ui",
 	event = "VeryLazy",
 	dependencies = {
-		-- https://github.com/mfussenegger/nvim-dap
 		"mfussenegger/nvim-dap",
-		-- https://github.com/theHamsta/nvim-dap-virtual-text
-		"theHamsta/nvim-dap-virtual-text", -- inline variable text while debugging
-		-- https://github.com/nvim-telescope/telescope-dap.nvim
-		"nvim-telescope/telescope-dap.nvim", -- telescope integration with dap
+		"theHamsta/nvim-dap-virtual-text",
+		"nvim-telescope/telescope-dap.nvim",
+		"leoluz/nvim-dap-go",
+		"suketa/nvim-dap-ruby",
+		"mfussenegger/nvim-dap-python",
+		{
+			"julianolf/nvim-dap-lldb",
+			dependencies = { "mfussenegger/nvim-dap" },
+			opts = {
+				codelldb_path = function()
+					-- Find your Mason installation path
+					local mason_registry = require("mason-registry")
+					local codelldb = mason_registry.get_package("codelldb")
+					return codelldb:get_install_path() .. "/extension/adapter/codelldb"
+				end,
+			},
+		},
 	},
+
 	opts = {
 		controls = {
 			element = "repl",
@@ -88,31 +100,28 @@ return {
 	},
 	config = function(_, opts)
 		local dap = require("dap")
-		require("dapui").setup(opts)
+		local dapui = require("dapui")
+		dapui.setup(opts)
 
-		dap.listeners.after.event_initialized["dapui_config"] = function()
-			require("dapui").open()
-		end
+		-- Python setup
+		local dap_python = require("dap-python")
+		dap_python.setup("python") -- Adjust this path if needed
+		dap_python.test_runner = "pytest"
 
-		dap.listeners.before.event_terminated["dapui_config"] = function()
-			-- Commented to prevent DAP UI from closing when unit tests finish
-			-- require('dapui').close()
-		end
+		-- Go setup
+		require("dap-go").setup()
 
-		dap.listeners.before.event_exited["dapui_config"] = function()
-			-- Commented to prevent DAP UI from closing when unit tests finish
-			-- require('dapui').close()
-		end
+		-- Ruby setup
+		require("dap-ruby").setup()
+		require("dap-lldb").setup(opts)
 
-		-- Add dap configurations based on your language/adapter settings
-		-- https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
-
+		-- Java Configuration
 		dap.configurations.java = {
 			{
 				name = "Debug Launch (2GB)",
 				type = "java",
 				request = "launch",
-				vmArgs = "" .. "-Xmx2g ",
+				vmArgs = "-Xmx2g",
 			},
 			{
 				name = "Debug Attach (8000)",
@@ -132,21 +141,27 @@ return {
 				name = "My Custom Java Run Configuration",
 				type = "java",
 				request = "launch",
-				-- You need to extend the classPath to list your dependencies.
-				-- `nvim-jdtls` would automatically add the `classPaths` property if it is missing
-				-- classPaths = {},
-
-				-- If using multi-module projects, remove otherwise.
-				-- projectName = "yourProjectName",
-
-				-- javaExec = "java",
 				mainClass = "replace.with.your.fully.qualified.MainClass",
-
-				-- If using the JDK9+ module system, this needs to be extended
-				-- `nvim-jdtls` would automatically populate this property
-				-- modulePaths = {},
-				vmArgs = "" .. "-Xmx2g ",
+				vmArgs = "-Xmx2g",
 			},
 		}
+
+		-- DAP UI Listeners
+		dap.listeners.after.event_initialized["dapui_config"] = function()
+			dapui.open()
+		end
+		dap.listeners.before.event_terminated["dapui_config"] = function()
+			-- Commented to prevent DAP UI from closing when unit tests finish
+			-- dapui.close()
+		end
+		dap.listeners.before.event_exited["dapui_config"] = function()
+			-- Commented to prevent DAP UI from closing when unit tests finish
+			-- dapui.close()
+		end
+
+		-- Python-specific mappings
+		vim.keymap.set("n", "<leader>dn", dap_python.test_method, { desc = "Debug nearest Python test" })
+		vim.keymap.set("n", "<leader>df", dap_python.test_class, { desc = "Debug Python test class" })
+		vim.keymap.set("v", "<leader>ds", dap_python.debug_selection, { desc = "Debug Python selection" })
 	end,
 }

@@ -11,7 +11,7 @@ return {
 			javascriptreact = { "eslint_d" },
 			typescriptreact = { "eslint_d" },
 			svelte = { "eslint_d" },
-			go = { "revive" },
+			go = { "golangcilint" },
 			ruby = { "standardrb" },
 			Dockerfile = { "hadolint" },
 			python = { "ruff" }, -- Add both Ruff and MyPy for Python
@@ -25,9 +25,6 @@ return {
 			"json",
 			"-",
 			"--stdin-filename",
-			function(params)
-				return params.filename
-			end,
 		}
 
 		-- Existing ESLint configuration

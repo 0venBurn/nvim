@@ -54,7 +54,7 @@ local config = {
 	settings = {
 		java = {
 			-- TODO Replace this with the absolute path to your main java version (JDK 17 or higher)
-			home = "/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home",
+			home = "/Library/Java/JavaVirtualMachines/openjdk-22.jdk/Contents/Home/",
 
 			inlayHints = {
 				parameterNames = {
@@ -71,7 +71,7 @@ local config = {
 				runtimes = {
 					{
 						name = "JavaSE-17",
-						path = "/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home",
+						path = "/Library/Java/JavaVirtualMachines/openjdk-22.jdk/Contents/Home/",
 					},
 				},
 			},
