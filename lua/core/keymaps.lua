@@ -13,6 +13,9 @@ keymap.set("n", "gx", ":!open <c-r><c-a><CR>") -- open URL under cursor
 keymap.set("n", "K", ":move .-2<CR>==", { noremap = true, silent = true })
 keymap.set("v", "K", ":move '<-2<CR>gv=gv", { noremap = true, silent = true })
 
+keymap.set("n", "<leader>p", ":bp<CR>", { noremap = true, silent = true })
+keymap.set("n", "<leader>n", ":bp<CR>", { noremap = true, silent = true })
+
 -- Move current line or selected lines down
 keymap.set("n", "J", ":move .+1<CR>==", { noremap = true, silent = true })
 keymap.set("v", "J", ":move '>+1<CR>gv=gv", { noremap = true, silent = true })
