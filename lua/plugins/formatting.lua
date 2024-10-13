@@ -21,7 +21,7 @@ return {
 				lua = { "stylua" },
 				python = { "isort", "black" },
 				go = { "goimports" },
-				ruby = { "rubyfmt" },
+				ruby = { "rubocop" },
 				rust = { "rustfmt" },
 			},
 			format_on_save = {

@@ -16,6 +16,7 @@ return {
 			ensure_installed = {
 				-- List of LSP servers to install automatically
 				"bashls",
+				"denols",
 				"clangd",
 				"cssls",
 				"powershell_es",
@@ -49,6 +50,7 @@ return {
 				"java-test",
 				"black",
 				"eslint_d",
+				"ruff",
 				"prettier",
 				"isort",
 				"mypy",
@@ -68,69 +70,16 @@ return {
 
 		local lsp_attach = function(client, bufnr)
 			-- Create your keybindings here...
-			local opts = { noremap = true, silent = true }
-
-			-- Basic navigation
-			vim.keymap.set("n", "gD", function()
-				vim.lsp.buf.definition()
-			end, opts)
-			vim.keymap.set("n", "gd", function()
-				vim.lsp.buf.definition()
-			end, opts)
-			vim.keymap.set("n", "K", function()
-				vim.lsp.buf.hover()
-			end, opts)
-			vim.keymap.set("n", "gi", function()
-				vim.lsp.buf.implementation()
-			end, opts)
-			vim.keymap.set("n", "<C-k>", function()
-				vim.lsp.buf.signature_help()
-			end, opts)
-
-			-- Add workspace folder
-			vim.keymap.set("n", "<space>wa", function()
-				vim.lsp.buf.add_workspace_folder()
-			end, opts)
-			vim.keymap.set("n", "<space>wr", function()
-				vim.lsp.buf.remove_workspace_folder()
-			end, opts)
-			vim.keymap.set("n", "<space>wl", function()
-				print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-			end, opts)
-
-			-- Rename
-			vim.keymap.set("n", "<space>rn", function()
-				vim.lsp.buf.rename()
-			end, opts)
-
-			-- Code action
-			vim.keymap.set({ "n", "v" }, "<space>ca", function()
-				vim.lsp.buf.code_action()
-			end, opts)
-
-			-- References
-			vim.keymap.set("n", "gr", function()
-				vim.lsp.buf.references()
-			end, opts)
-
-			-- Diagnostics
-			vim.keymap.set("n", "[d", function()
-				vim.diagnostic.goto_prev()
-			end, opts)
-			vim.keymap.set("n", "]d", function()
-				vim.diagnostic.goto_next()
-			end, opts)
-			vim.keymap.set("n", "<space>e", function()
-				vim.diagnostic.open_float()
-			end, opts)
-			vim.keymap.set("n", "<space>q", function()
-				vim.diagnostic.setloclist()
-			end, opts)
 		end
 
 		require("mason-lspconfig").setup_handlers({
 			function(server_name)
-				if server_name ~= "jdtls" then
+				if
+					server_name ~= "jdtls"
+					and server_name ~= "solargraph"
+					and server_name ~= "denols"
+					and server_name ~= "tsserver"
+				then
 					lspconfig[server_name].setup({
 						on_attach = lsp_attach,
 						capabilities = lsp_capabilities,
@@ -193,6 +142,42 @@ return {
 						},
 					},
 				})
+			end,
+			["solargraph"] = function()
+				lspconfig["solargraph"].setup({
+					on_attach = lsp_attach,
+					capabilities = lsp_capabilities,
+					settings = {
+						solargraph = {
+							diagnostics = true,
+						},
+					},
+					filetypes = { "ruby", "rakefile" },
+					root_dir = lspconfig.util.root_pattern("Gemfile", ".git", "."),
+				})
+			end,
+			["denols"] = function()
+				-- Use denols only for Deno projects
+				if vim.fn.filereadable("deno.json") == 1 or vim.fn.filereadable("deno.jsonc") == 1 then
+					lspconfig.denols.setup({
+						on_attach = lsp_attach,
+						capabilities = lsp_capabilities,
+						init_options = {
+							lint = true,
+						},
+						root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
+					})
+				end
+			end,
+			["tsserver"] = function()
+				-- Use tsserver for non-Deno projects
+				if vim.fn.filereadable("deno.json") == 0 and vim.fn.filereadable("deno.jsonc") == 0 then
+					lspconfig.tsserver.setup({
+						on_attach = lsp_attach,
+						capabilities = lsp_capabilities,
+						root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", ".git"),
+					})
+				end
 			end,
 		})
 

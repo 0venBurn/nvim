@@ -1,4 +1,17 @@
 -- return {
+-- 	"scottmckendry/cyberdream.nvim",
+-- 	lazy = false,
+-- 	priority = 1000,
+-- 	opts = {
+-- 		transparent = true,
+-- 	},
+-- 	config = function(_, opts)
+-- 		require("cyberdream").setup(opts)
+
+-- 		vim.cmd("colorscheme cyberdream")
+-- 	end,
+-- }
+-- return {
 -- 	-- https://github.com/folke/tokyonight.nvim
 -- 	"folke/tokyonight.nvim", -- You can replace this with your favorite colorschemecolor
 -- 	lazy = false, -- We want the colorscheme to load immediately when starting Neovim
@@ -267,3 +280,4 @@ return {
 -- 		end,
 -- 	},
 -- }
+--
