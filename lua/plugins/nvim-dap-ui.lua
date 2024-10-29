@@ -1,4 +1,4 @@
--- Debugging Support
+-- Debugging Supportdap
 return {
 	"rcarriga/nvim-dap-ui",
 	event = "VeryLazy",
