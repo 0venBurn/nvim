@@ -32,7 +32,6 @@ return {
 			javascriptreact = { "eslint_d" },
 			typescriptreact = { "eslint_d" },
 			svelte = { "eslint_d" },
-			go = { "golangcilint" },
 			ruby = { "rubocop" },
 			Dockerfile = { "hadolint" },
 			python = { "ruff" },

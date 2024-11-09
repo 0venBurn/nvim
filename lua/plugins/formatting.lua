@@ -18,11 +18,10 @@ return {
 				markdown = { "prettier" },
 				graphql = { "prettier" },
 				liquid = { "prettier" },
+				go = { "gofumpt" },
 				lua = { "stylua" },
 				python = { "isort", "black" },
-				go = { "goimports" },
 				ruby = { "rubocop" },
-				rust = { "rustfmt" },
 			},
 			format_on_save = {
 				lsp_fallback = true,
