@@ -6,7 +6,10 @@ Currently Configured for:
 
 - Java
 - Go
+- Zig
 - React
+- C
+- C++
 - Rust
 - Python
 - Js

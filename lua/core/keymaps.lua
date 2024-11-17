@@ -2,6 +2,20 @@ vim.g.mapleader = " "
 
 local keymap = vim.keymap
 
+local function toggle_inlay_hints()
+	local client = vim.lsp.get_active_clients()[1]
+
+	if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+		local isEnabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
+		vim.lsp.inlay_hint.enable(not isEnabled, { bufnr = 0 })
+	else
+		print("Inlay hints are not supported for this buffer.")
+	end
+end
+
+-- Map the function to a key (e.g., <leader>ih)
+vim.keymap.set("n", "<leader>ih", toggle_inlay_hints, { desc = "Toggle Inlay Hints" })
+
 keymap.set("i", "jk", "<ESC>") -- exit insert mode with jk
 keymap.set("n", "<leader>wq", ":wq<CR>") -- save and quit
 keymap.set("n", "<leader>qq", ":q!<CR>") -- quit without saving
@@ -151,6 +165,7 @@ keymap.set("n", "<leader>bb", "<cmd>lua require'dap'.toggle_breakpoint()<cr>")
 keymap.set("n", "<leader>bc", "<cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<cr>")
 keymap.set("n", "<leader>bl", "<cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<cr>")
 keymap.set("n", "<leader>br", "<cmd>lua require'dap'.clear_breakpoints()<cr>")
+
 keymap.set("n", "<leader>ba", "<cmd>Telescope dap list_breakpoints<cr>")
 keymap.set("n", "<leader>dc", "<cmd>lua require'dap'.continue()<cr>")
 keymap.set("n", "<leader>dj", "<cmd>lua require'dap'.step_over()<cr>")
