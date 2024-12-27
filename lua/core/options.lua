@@ -3,6 +3,7 @@ local opt = vim.opt
 -- Session Management
 opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
+opt.conceallevel = 2
 -- Line Numbers
 opt.relativenumber = true
 opt.number = true
