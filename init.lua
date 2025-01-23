@@ -1,5 +1,6 @@
 -- Bootstrap lazy
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
 		"git",
@@ -29,6 +30,8 @@ vim.api.nvim_exec(
 vim.g.mapleader = " "
 vim.g.highlightedyank_highlight_duration = 1000
 vim.g.python3_host_prog = "/Users/evanmac/miniconda3/envs/nvim/bin/python"
+
+vim.opt.completeopt:append({ "noinsert", "popup" })
 -- Initialize lazy with dynamic loading of anything in the plugins directory
 require("lazy").setup("plugins", {
 	change_detection = {

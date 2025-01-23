@@ -12,7 +12,19 @@ return {
 				window_picker = {
 					enable = false,
 				},
-				quit_on_open = true,
+			},
+		},
+		view = {
+			float = {
+				enable = true,
+				open_win_config = {
+					relative = "editor",
+					width = 50,
+					height = 30,
+					row = (vim.o.lines - 30) / 2,
+					col = (vim.o.columns - 50) / 2,
+					border = "rounded",
+				},
 			},
 		},
 	},

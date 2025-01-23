@@ -160,6 +160,32 @@ keymap.set("n", "<leader>tm", function()
 	end
 end)
 
+-- Copilot
+vim.keymap.set("i", "<C-u>", function()
+	return vim.fn["copilot#Accept"]("\\<CR>")
+end, { expr = true, silent = true, replace_keycodes = false })
+
+-- Cycle to the next suggestion with <C-]>
+vim.keymap.set("i", "<C-]>", "<Plug>(copilot-next)", { noremap = true, silent = true })
+
+-- Clear/dismiss the current suggestion with <Space>cc
+vim.keymap.set("i", "<C-x>", "<Plug>(copilot-dismiss)", { desc = "Clear Copilot Suggestion" })
+
+local function toggle_copilot()
+	if vim.g.copilot_enabled == nil or vim.g.copilot_enabled == true then
+		vim.cmd("Copilot disable")
+		vim.g.copilot_enabled = false
+		print("Copilot disabled")
+	else
+		vim.cmd("Copilot enable")
+		vim.g.copilot_enabled = true
+		print("Copilot enabled")
+	end
+end
+
+-- Keybinding to toggle Copilot on/off
+keymap.set("n", "<Space>co", toggle_copilot, { desc = "Toggle Copilot" })
+
 -- Debugging
 keymap.set("n", "<leader>bb", "<cmd>lua require'dap'.toggle_breakpoint()<cr>")
 keymap.set("n", "<leader>bc", "<cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<cr>")
