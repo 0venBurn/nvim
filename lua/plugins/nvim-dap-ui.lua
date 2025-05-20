@@ -144,8 +144,26 @@ return {
 	config = function(_, opts)
 		local dap = require("dap")
 		require("dapui").setup(opts)
-		require("dap-python").setup()
+		require("dap-python").setup("/Users/evanmac/miniconda3/envs/nvim/bin/python")
+
+		dap.configurations.python = {
+			{
+				type = "python",
+				request = "launch",
+				name = "Launch file",
+				program = "${file}",
+			},
+		}
 		require("dap-go").setup()
+
+		dap.configurations.go = {
+			{
+				type = "go",
+				name = "Debug",
+				request = "launch",
+				program = "${file}",
+			},
+		}
 
 		dap.listeners.after.event_initialized["dapui_config"] = function()
 			require("dapui").open()

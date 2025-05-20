@@ -25,8 +25,9 @@ keymap.set("n", "gx", ":!open <c-r><c-a><CR>") -- open URL under cursor
 -- Move current line or selected lines up
 keymap.set("n", "K", ":move .-2<CR>==", { noremap = true, silent = true })
 keymap.set("v", "K", ":move '<-2<CR>gv=gv", { noremap = true, silent = true })
-keymap.set("n", "<leader>p", ":bp<CR>", { noremap = true, silent = true })
-keymap.set("n", "<leader>n", ":bp<CR>", { noremap = true, silent = true })
+
+keymap.set("n", "<leader>pb", ":bp<CR>", { noremap = true, silent = true })
+keymap.set("n", "<leader>nb", ":bp<CR>", { noremap = true, silent = true })
 
 -- Move current line or selected lines down
 keymap.set("n", "J", ":move .+1<CR>==", { noremap = true, silent = true })
@@ -53,12 +54,12 @@ keymap.set("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>")
 keymap.set("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>")
 keymap.set("n", "<C-\\>", "<cmd>TmuxNavigatePrevious<CR>")
 
--- Diff keymaps
-keymap.set("n", "<leader>cc", ":diffput<CR>") -- put diff from current to other during diff
-keymap.set("n", "<leader>cj", ":diffget 1<CR>") -- get diff from left (local) during merge
-keymap.set("n", "<leader>ck", ":diffget 3<CR>") -- get diff from right (remote) during merge
-keymap.set("n", "<leader>cn", "]c") -- next diff hunk
-keymap.set("n", "<leader>cp", "[c") -- previous diff hunk
+-- Buffer management
+keymap.set("n", "<leader>bn", ":bnext<CR>") -- Next buffer
+keymap.set("n", "<leader>bp", ":bprevious<CR>") -- Previous buffer
+keymap.set("n", "<leader>bb", ":b#<CR>") -- Toggle between current and last buffer
+keymap.set("n", "<leader>bd", ":bdelete<CR>") -- Delete current buffer
+keymap.set("n", "<leader>bl", ":buffers<CR>") -- List all buffers
 
 -- Quickfix keymaps
 keymap.set("n", "<leader>qo", ":copen<CR>") -- open quickfix list

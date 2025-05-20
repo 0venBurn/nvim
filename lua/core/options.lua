@@ -14,6 +14,8 @@ opt.expandtab = true
 opt.autoindent = true
 vim.bo.softtabstop = 2
 
+vim.g.repl_split = "bottom"
+
 -- Line Wrapping
 opt.wrap = false
 
