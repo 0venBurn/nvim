@@ -1,8 +1,15 @@
 return {
-	-- Make sure to set this up properly if you have lazy=true
 	"MeanderingProgrammer/render-markdown.nvim",
-	opts = {
-		file_types = { "markdown" },
+	dependencies = {
+		"nvim-treesitter/nvim-treesitter",
+		"nvim-tree/nvim-web-devicons",
 	},
-	ft = { "markdown" },
+	opts = {
+		file_types = { "markdown", "Avante" },
+		-- Add these additional settings for better Avante compatibility
+		render_modes = { "n", "c", "t" }, -- Only render in normal, command, and terminal modes
+		max_file_size = 10.0, -- Limit file size to prevent performance issues
+		debounce = 100, -- Add debounce to prevent rendering conflicts
+	},
+	ft = { "markdown", "Avante" },
 }

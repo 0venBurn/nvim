@@ -72,23 +72,82 @@ keymap.set("n", "<leader>qc", ":cclose<CR>") -- close quickfix list
 -- Vim-maximizer
 keymap.set("n", "<leader>sm", ":MaximizerToggle<CR>") -- toggle maximize tab
 
--- Nvim-tree
-keymap.set("n", "<leader>ee", ":NvimTreeToggle<CR>") -- toggle file explorer
-keymap.set("n", "<leader>er", ":NvimTreeFocus<CR>") -- toggle focus to file explorer
-keymap.set("n", "<leader>ef", ":NvimTreeFindFile<CR>") -- find file in file explorer
+-- Explorer keymaps (replacing NvimTree)
+keymap.set("n", "<leader>e", function()
+	Snacks.explorer()
+end, { desc = "Toggle File Explorer" })
 
--- Telescope
-keymap.set("n", "<leader>ff", require("telescope.builtin").find_files, {})
-keymap.set("n", "<leader>fg", require("telescope.builtin").live_grep, {})
-keymap.set("n", "<leader>fb", require("telescope.builtin").buffers, {})
-keymap.set("n", "<leader>fh", require("telescope.builtin").help_tags, {})
-keymap.set("n", "<leader>fs", require("telescope.builtin").current_buffer_fuzzy_find, {})
-keymap.set("n", "<leader>fo", require("telescope.builtin").lsp_document_symbols, {})
-keymap.set("n", "<leader>fi", require("telescope.builtin").lsp_incoming_calls, {})
+keymap.set("n", "<leader>ee", function()
+	Snacks.explorer()
+end, { desc = "Toggle File Explorer" })
+
+keymap.set("n", "<leader>er", function()
+	Snacks.explorer({ focus = true })
+end, { desc = "Focus File Explorer" })
+
+keymap.set("n", "<leader>ef", function()
+	Snacks.explorer({ focus = true, follow_file = true })
+end, { desc = "Find File in Explorer" })
+
+-- Replace telescope keymaps with snacks.picker
+keymap.set("n", "<leader>ff", function()
+	Snacks.picker.files()
+end, { desc = "Find Files" })
+
+keymap.set("n", "<leader>fg", function()
+	Snacks.picker.grep()
+end, { desc = "Live Grep" })
+
+keymap.set("n", "<leader>fb", function()
+	Snacks.picker.buffers()
+end, { desc = "Find Buffers" })
+
+keymap.set("n", "<leader>fh", function()
+	Snacks.picker.help()
+end, { desc = "Help Tags" })
+
+keymap.set("n", "<leader>fs", function()
+	Snacks.picker.lines()
+end, { desc = "Current Buffer Fuzzy Find" })
+
+keymap.set("n", "<leader>fo", function()
+	Snacks.picker.lsp_symbols()
+end, { desc = "LSP Document Symbols" })
+
+keymap.set("n", "<leader>fi", function()
+	Snacks.picker.lsp_references()
+end, { desc = "LSP Incoming Calls/References" })
+
 keymap.set("n", "<leader>fm", function()
-	require("telescope.builtin").treesitter({ default_text = ":method:" })
-end)
+	Snacks.picker.lsp_symbols({ symbols = { "method", "function" } })
+end, { desc = "Find Methods/Functions" })
 
+-- Additional useful snacks.picker keymaps you might want
+keymap.set("n", "<leader>fr", function()
+	Snacks.picker.recent()
+end, { desc = "Recent Files" })
+
+keymap.set("n", "<leader>fc", function()
+	Snacks.picker.files({ cwd = vim.fn.stdpath("config") })
+end, { desc = "Config Files" })
+
+keymap.set("n", "<leader>fd", function()
+	Snacks.picker.diagnostics()
+end, { desc = "Diagnostics" })
+
+keymap.set("n", "<leader>fw", function()
+	Snacks.picker.grep_word()
+end, { desc = "Grep Word Under Cursor" })
+
+keymap.set("n", "<leader>gf", function()
+	Snacks.picker.git_files()
+end, { desc = "Git Files" })
+
+keymap.set("n", "<leader>gc", function()
+	Snacks.picker.git_status()
+end, { desc = "Git Status" })
+
+-- Smart picker (automatically chooses best source)
 -- Git
 keymap.set("n", "<leader>gb", ":GitBlameToggle<CR>") -- toggle git blame
 keymap.set("n", "<leader>git", ":LazyGit<CR>")
