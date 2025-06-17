@@ -72,6 +72,8 @@ keymap.set("n", "<leader>qc", ":cclose<CR>") -- close quickfix list
 -- Vim-maximizer
 keymap.set("n", "<leader>sm", ":MaximizerToggle<CR>") -- toggle maximize tab
 
+Snacks = require("snacks")
+
 -- Explorer keymaps (replacing NvimTree)
 keymap.set("n", "<leader>e", function()
 	Snacks.explorer()
@@ -148,6 +150,19 @@ keymap.set("n", "<leader>gc", function()
 end, { desc = "Git Status" })
 
 -- Smart picker (automatically chooses best source)
+keymap.set("n", "<leader><space>", function()
+	Snacks.picker.smart()
+end, { desc = "Smart Find" })
+
+-- Quick access to picker with custom options
+keymap.set("n", "<leader>fF", function()
+	Snacks.picker.files({ hidden = true, ignored = true })
+end, { desc = "Find All Files (including hidden)" })
+
+keymap.set("n", "<leader>fG", function()
+	Snacks.picker.grep({ hidden = true, ignored = true })
+end, { desc = "Live Grep (including hidden)" })
+
 -- Git
 keymap.set("n", "<leader>gb", ":GitBlameToggle<CR>") -- toggle git blame
 keymap.set("n", "<leader>git", ":LazyGit<CR>")
