@@ -3,9 +3,9 @@ return {
 	"neovim/nvim-lspconfig",
 	event = "VeryLazy",
 	dependencies = {
-		-- LSP Management
-		{ "williamboman/mason.nvim" },
-		{ "williamboman/mason-lspconfig.nvim" },
+		-- LSP Management - Pin to pre-v2.0 versions for Neovim 0.10.x compatibility
+		{ "williamboman/mason.nvim", version = "v1.11.0" },
+		{ "williamboman/mason-lspconfig.nvim", version = "v1.32.0" },
 		{ "WhoIsSethDaniel/mason-tool-installer.nvim" },
 		{ "j-hui/fidget.nvim", opts = {} },
 		{ "folke/neodev.nvim" },
@@ -42,6 +42,7 @@ return {
 				"gopls",
 				"ts_ls",
 			},
+			automatic_installation = false, -- Disable automatic installation to avoid v2.0 issues
 		})
 
 		require("mason-tool-installer").setup({

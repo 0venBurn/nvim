@@ -4,10 +4,14 @@ return {
 	lazy = false,
 	version = false, -- Never set this value to "*"! Never!
 	opts = {
-		-- Provider configuration
-		provider = "copilot",
-		copilot = {
-			model = "claude-3.7-sonnet", -- Fixed model name (was claude-3.7-sonnet)
+		provider = "copilot", -- Default provider is Copilot
+		providers = {
+			-- Enable Copilot provider
+			copilot = {
+				enabled = true,
+				-- Optional: Set the model to use for Copilot
+				model = "claude-3.7-sonnet", -- Fixed model name (was claude-3.7-sonnet)
+			},
 		},
 		ask = {
 			floating = true,
