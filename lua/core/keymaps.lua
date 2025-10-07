@@ -2,20 +2,6 @@ vim.g.mapleader = " "
 
 local keymap = vim.keymap
 
-local function toggle_inlay_hints()
-	local client = vim.lsp.get_active_clients()[1]
-
-	if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-		local isEnabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
-		vim.lsp.inlay_hint.enable(not isEnabled, { bufnr = 0 })
-	else
-		print("Inlay hints are not supported for this buffer.")
-	end
-end
-
--- Map the function to a key (e.g., <leader>ih)
-vim.keymap.set("n", "<leader>ih", toggle_inlay_hints, { desc = "Toggle Inlay Hints" })
-
 keymap.set("i", "jk", "<ESC>") -- exit insert mode with jk
 keymap.set("n", "<leader>wq", ":wq<CR>") -- save and quit
 keymap.set("n", "<leader>qq", ":q!<CR>") -- quit without saving
@@ -141,7 +127,7 @@ keymap.set("n", "<leader>fw", function()
 	Snacks.picker.grep_word()
 end, { desc = "Grep Word Under Cursor" })
 
-keymap.set("n", "<leader>gf", function()
+keymap.set("n", "<leader>gF", function()
 	Snacks.picker.git_files()
 end, { desc = "Git Files" })
 

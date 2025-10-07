@@ -10,11 +10,11 @@ return {
 		workspaces = {
 			{
 				name = "main",
-				path = "~/vaults/",
+				path = "~/notes/",
 			},
 			{
 				name = "workspaces",
-				path = "~/vaults/",
+				path = "~/notes/",
 			},
 		}, -- Removed detect_cwd from inside workspaces
 		note_id_func = function(title)
