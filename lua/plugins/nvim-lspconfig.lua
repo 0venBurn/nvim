@@ -20,7 +20,7 @@ return {
 				"cssls",
 				"powershell_es",
 				"solargraph",
-				"pyright",
+				"basedpyright",
 				"html",
 				"gradle_ls",
 				"dockerls",
@@ -79,6 +79,17 @@ return {
 		-- Configure specific servers with custom settings
 		vim.lsp.config("svelte", {
 			capabilities = lsp_capabilities,
+		})
+
+		vim.lsp.config("basedpyright", {
+			capabilities = lsp_capabilities,
+			settings = {
+				["basedpyright"] = {
+					inlayHints = {
+						enable = true,
+					},
+				},
+			},
 		})
 
 		vim.lsp.config("rust_analyzer", {
@@ -247,7 +258,7 @@ return {
 			"cssls",
 			"powershell_es",
 			"solargraph",
-			"pyright",
+			"basedpyright",
 			"html",
 			"gradle_ls",
 			"dockerls",
