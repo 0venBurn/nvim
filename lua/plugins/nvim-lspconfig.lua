@@ -85,6 +85,9 @@ return {
       capabilities = lsp_capabilities,
       settings = {
         ["basedpyright"] = {
+          analysis = {
+            typeCheckingMode = "off"
+          },
           inlayHints = {
             enable = true,
           },
