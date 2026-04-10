@@ -19,6 +19,11 @@ return {
 				tree = false,
 				follow_file = false,
 			},
+			win = {
+				wo = {
+					winhighlight = "Normal:SnacksExplorerNormal",
+				},
+			},
 		},
 		statuscolumn = { enabled = true },
 		words = { enabled = true },

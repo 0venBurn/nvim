@@ -2,6 +2,10 @@ return {
 	"echasnovski/mini.nvim",
 	config = function()
 		require("mini.statusline").setup()
-		-- Other mini modules you might be using
+		require("mini.icons").setup({
+			file = {
+				[".gitignore"] = { glyph = "󰒓", hl = "MiniIconsGrey" },
+			},
+		})
 	end,
 }
