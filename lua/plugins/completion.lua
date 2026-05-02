@@ -1,4 +1,7 @@
+-- Completion and snippets
 return {
+	-- nvim-cmp.lua
+	{
 	"hrsh7th/nvim-cmp",
 	event = "InsertEnter",
 	dependencies = {
@@ -62,4 +65,5 @@ return {
 			},
 		})
 	end,
+}
 }

@@ -1,338 +1,544 @@
 -- Warm dark colorscheme for Neovim
 -- Candlelight on aged linen. Not a terminal.
 
-vim.cmd("highlight clear")
-vim.g.colors_name = "cuimhne"
+---@class Cuimhne
+---@field config CuimhneConfig
+---@field palette CuimhnePalette
+local Cuimhne = {}
 
-local bg0 = "#1A1714"
-local bg1 = "#242019"
-local bg2 = "#2E2921"
-local bg3 = "#332E27"
-local bg4 = "#3D3830"
+---@class CuimhneItalicConfig
+---@field strings boolean
+---@field comments boolean
+---@field operators boolean
+---@field folds boolean
+---@field emphasis boolean
 
-local fg0 = "#F0EBE1"
-local fg1 = "#D4CEC6"
-local fg2 = "#9C9488"
-local fg3 = "#6B6560"
+---@class CuimhneHighlightDefinition
+---@field fg string?
+---@field bg string?
+---@field sp string?
+---@field blend integer?
+---@field bold boolean?
+---@field standout boolean?
+---@field underline boolean?
+---@field undercurl boolean?
+---@field underdouble boolean?
+---@field underdotted boolean?
+---@field strikethrough boolean?
+---@field italic boolean?
+---@field reverse boolean?
+---@field nocombine boolean?
+---@field link string?
 
-local green = "#7FA688"
-local green_d = "#5C7A64"
-local sage = "#A8B898"
-local terra = "#C47A5A"
-local terra_d = "#A05C4A"
-local gold = "#C4A882"
-local gold_d = "#A8855A"
-local linen = "#B8A898"
-local mist = "#8FA89C"
+---@class CuimhneConfig
+---@field terminal_colors boolean?
+---@field transparent_mode boolean?
+---@field dim_inactive boolean?
+---@field bold boolean?
+---@field underline boolean?
+---@field undercurl boolean?
+---@field strikethrough boolean?
+---@field italic CuimhneItalicConfig?
+---@field overrides table<string, CuimhneHighlightDefinition>?
+---@field palette_overrides table<string, string>?
+local default_config = {
+	terminal_colors = true,
+	transparent_mode = false,
+	dim_inactive = false,
+	bold = true,
+	underline = true,
+	undercurl = true,
+	strikethrough = true,
+	italic = {
+		strings = true,
+		comments = true,
+		operators = false,
+		folds = true,
+		emphasis = true,
+	},
+	overrides = {},
+	palette_overrides = {},
+}
 
-local hl = vim.api.nvim_set_hl
+Cuimhne.config = vim.deepcopy(default_config)
 
--- Editor
-hl(0, "Normal", { fg = fg0, bg = bg0 })
-hl(0, "NormalFloat", { fg = fg0, bg = bg2 })
-hl(0, "NormalNC", { fg = fg1, bg = bg0 })
-hl(0, "SignColumn", { fg = fg2, bg = bg0 })
-hl(0, "LineNr", { fg = bg3, bg = bg0 })
-hl(0, "CursorLineNr", { fg = fg2, bg = bg0, bold = true })
-hl(0, "CursorLine", { bg = bg1 })
-hl(0, "ColorColumn", { bg = bg1 })
-hl(0, "Folded", { fg = fg3, bg = bg1, italic = true })
-hl(0, "FoldColumn", { fg = bg3, bg = bg0 })
-hl(0, "VertSplit", { fg = bg3, bg = bg0 })
-hl(0, "WinSeparator", { fg = bg3, bg = bg0 })
-hl(0, "EndOfBuffer", { fg = bg2 })
-hl(0, "NonText", { fg = bg3 })
-hl(0, "SpecialKey", { fg = bg3 })
-hl(0, "Whitespace", { fg = bg3 })
-hl(0, "Conceal", { fg = fg3 })
+---@class CuimhnePalette
+Cuimhne.palette = {
+	bg0 = "#1A1714",
+	bg1 = "#242019",
+	bg2 = "#2E2921",
+	bg3 = "#332E27",
+	bg4 = "#3D3830",
+	fg0 = "#F0EBE1",
+	fg1 = "#D4CEC6",
+	fg2 = "#9C9488",
+	fg3 = "#6B6560",
+	green = "#7FA688",
+	green_d = "#5C7A64",
+	sage = "#A8B898",
+	terra = "#C47A5A",
+	terra_d = "#A05C4A",
+	gold = "#C4A882",
+	gold_d = "#A8855A",
+	linen = "#B8A898",
+	mist = "#8FA89C",
+}
 
-hl(0, "RenderMarkdownCode", { bg = bg0 })
+local function get_colors()
+	local colors = vim.deepcopy(Cuimhne.palette)
+	for color, hex in pairs(Cuimhne.config.palette_overrides or {}) do
+		colors[color] = hex
+	end
+	return colors
+end
 
--- Selection & Search
-hl(0, "Visual", { bg = bg4 })
-hl(0, "VisualNOS", { bg = bg3 })
-hl(0, "Search", { fg = bg0, bg = gold })
-hl(0, "IncSearch", { fg = bg0, bg = terra })
-hl(0, "CurSearch", { fg = bg0, bg = gold })
-hl(0, "Substitute", { fg = bg0, bg = terra })
+local function bg(color)
+	return Cuimhne.config.transparent_mode and nil or color
+end
 
--- Statusline
-hl(0, "StatusLine", { fg = fg1, bg = bg2 })
-hl(0, "StatusLineNC", { fg = fg3, bg = bg1 })
-hl(0, "WildMenu", { fg = bg0, bg = green })
-hl(0, "TabLine", { fg = fg2, bg = bg1 })
-hl(0, "TabLineSel", { fg = fg0, bg = bg3 })
-hl(0, "TabLineFill", { bg = bg1 })
+local function get_groups()
+	local c = get_colors()
+	local config = Cuimhne.config
 
--- Pmenu
-hl(0, "Pmenu", { fg = fg1, bg = bg2 })
-hl(0, "PmenuSel", { fg = fg0, bg = bg4 })
-hl(0, "PmenuSbar", { bg = bg2 })
-hl(0, "PmenuThumb", { bg = bg3 })
-hl(0, "FloatBorder", { fg = bg3, bg = bg2 })
-hl(0, "FloatTitle", { fg = sage, bg = bg2 })
+	if config.terminal_colors then
+		local term_colors = {
+			c.bg0,
+			c.terra,
+			c.green,
+			c.gold,
+			c.mist,
+			c.linen,
+			c.sage,
+			c.fg1,
+			c.fg3,
+			c.terra,
+			c.green,
+			c.gold,
+			c.mist,
+			c.linen,
+			c.sage,
+			c.fg0,
+		}
+		for i, value in ipairs(term_colors) do
+			vim.g["terminal_color_" .. i - 1] = value
+		end
+	end
 
--- Messages
-hl(0, "ErrorMsg", { fg = terra, bold = true })
-hl(0, "WarningMsg", { fg = gold })
-hl(0, "MoreMsg", { fg = green })
-hl(0, "ModeMsg", { fg = fg2 })
-hl(0, "Question", { fg = sage })
+	---@type table<string, CuimhneHighlightDefinition>
+	local groups = {
+		-- Named palette groups
+		CuimhneBg0 = { fg = c.bg0 },
+		CuimhneBg1 = { fg = c.bg1 },
+		CuimhneBg2 = { fg = c.bg2 },
+		CuimhneBg3 = { fg = c.bg3 },
+		CuimhneBg4 = { fg = c.bg4 },
+		CuimhneFg0 = { fg = c.fg0 },
+		CuimhneFg1 = { fg = c.fg1 },
+		CuimhneFg2 = { fg = c.fg2 },
+		CuimhneFg3 = { fg = c.fg3 },
+		CuimhneGreen = { fg = c.green },
+		CuimhneSage = { fg = c.sage },
+		CuimhneTerra = { fg = c.terra },
+		CuimhneGold = { fg = c.gold },
+		CuimhneLinen = { fg = c.linen },
+		CuimhneMist = { fg = c.mist },
 
--- Syntax
-hl(0, "Comment", { fg = fg3, italic = true })
-hl(0, "Constant", { fg = gold })
-hl(0, "String", { fg = gold, italic = true })
-hl(0, "Character", { fg = gold })
-hl(0, "Number", { fg = gold_d })
-hl(0, "Boolean", { fg = terra })
-hl(0, "Float", { fg = gold_d })
-hl(0, "Identifier", { fg = fg0 })
-hl(0, "Function", { fg = mist })
-hl(0, "Statement", { fg = green_d, bold = true })
-hl(0, "Conditional", { fg = green_d, bold = true })
-hl(0, "Repeat", { fg = green_d, bold = true })
-hl(0, "Label", { fg = green })
-hl(0, "Operator", { fg = sage })
-hl(0, "Keyword", { fg = green_d, bold = true })
-hl(0, "Exception", { fg = terra, bold = true })
-hl(0, "PreProc", { fg = linen })
-hl(0, "Include", { fg = linen })
-hl(0, "Define", { fg = linen })
-hl(0, "Macro", { fg = linen })
-hl(0, "PreCondit", { fg = linen })
-hl(0, "Type", { fg = linen })
-hl(0, "StorageClass", { fg = linen })
-hl(0, "Structure", { fg = linen })
-hl(0, "Typedef", { fg = linen })
-hl(0, "Special", { fg = sage })
-hl(0, "SpecialChar", { fg = sage })
-hl(0, "Tag", { fg = terra })
-hl(0, "Delimiter", { fg = fg2 })
-hl(0, "SpecialComment", { fg = fg2, italic = true })
-hl(0, "Debug", { fg = terra })
-hl(0, "Underlined", { underline = true })
-hl(0, "Ignore", { fg = bg3 })
-hl(0, "Error", { fg = terra, bold = true })
-hl(0, "Todo", { fg = bg0, bg = gold, bold = true })
+		-- Editor
+		Normal = { fg = c.fg0, bg = bg(c.bg0) },
+		NormalFloat = { fg = c.fg0, bg = bg(c.bg2) },
+		NormalNC = config.dim_inactive and { fg = c.fg1, bg = bg(c.bg1) } or { fg = c.fg1, bg = bg(c.bg0) },
+		SignColumn = { fg = c.fg2, bg = bg(c.bg0) },
+		LineNr = { fg = c.bg3, bg = bg(c.bg0) },
+		CursorLineNr = { fg = c.fg2, bg = bg(c.bg0), bold = config.bold },
+		CursorLine = { bg = bg(c.bg1) },
+		CursorColumn = { link = "CursorLine" },
+		ColorColumn = { bg = bg(c.bg1) },
+		Folded = { fg = c.fg3, bg = bg(c.bg1), italic = config.italic.folds },
+		FoldColumn = { fg = c.bg3, bg = bg(c.bg0) },
+		VertSplit = { fg = c.bg3, bg = bg(c.bg0) },
+		WinSeparator = { fg = c.bg3, bg = bg(c.bg0) },
+		EndOfBuffer = { fg = c.bg2 },
+		NonText = { fg = c.bg3 },
+		SpecialKey = { fg = c.bg3 },
+		Whitespace = { fg = c.bg3 },
+		Conceal = { fg = c.fg3 },
+		Directory = { fg = c.sage },
+		Title = { fg = c.green, bold = config.bold },
+		MatchParen = { bg = bg(c.bg3), bold = config.bold },
 
--- Treesitter
-hl(0, "@comment", { link = "Comment" })
-hl(0, "@variable", { fg = fg0 })
-hl(0, "@variable.builtin", { fg = terra })
-hl(0, "@variable.parameter", { fg = fg1 })
-hl(0, "@variable.member", { fg = fg0 })
-hl(0, "@constant", { fg = gold })
-hl(0, "@constant.builtin", { fg = gold, bold = true })
-hl(0, "@constant.macro", { fg = linen })
-hl(0, "@string", { fg = gold, italic = true })
-hl(0, "@string.escape", { fg = sage })
-hl(0, "@number", { fg = gold_d })
-hl(0, "@boolean", { fg = terra })
-hl(0, "@float", { fg = gold_d })
-hl(0, "@function", { fg = mist })
-hl(0, "@function.builtin", { fg = mist, italic = true })
-hl(0, "@function.call", { fg = mist })
-hl(0, "@function.macro", { fg = linen })
-hl(0, "@function.method", { fg = mist })
-hl(0, "@function.method.call", { fg = mist })
-hl(0, "@constructor", { fg = linen })
-hl(0, "@keyword", { fg = green_d, bold = true })
-hl(0, "@keyword.function", { fg = green_d, bold = true })
-hl(0, "@keyword.return", { fg = terra, bold = true })
-hl(0, "@keyword.operator", { fg = sage })
-hl(0, "@keyword.import", { fg = linen })
-hl(0, "@keyword.conditional", { fg = green_d, bold = true })
-hl(0, "@keyword.repeat", { fg = green_d, bold = true })
-hl(0, "@keyword.exception", { fg = terra, bold = true })
-hl(0, "@type", { fg = linen })
-hl(0, "@type.builtin", { fg = linen, italic = true })
-hl(0, "@type.definition", { fg = linen })
-hl(0, "@attribute", { fg = sage })
-hl(0, "@property", { fg = fg1 })
-hl(0, "@operator", { fg = sage })
-hl(0, "@punctuation", { fg = fg2 })
-hl(0, "@punctuation.bracket", { fg = fg2 })
-hl(0, "@punctuation.delimiter", { fg = fg2 })
-hl(0, "@tag", { fg = terra })
-hl(0, "@tag.attribute", { fg = sage })
-hl(0, "@tag.delimiter", { fg = fg3 })
-hl(0, "@markup.heading", { fg = green, bold = true })
-hl(0, "@markup.link", { fg = mist, underline = true })
-hl(0, "@markup.link.url", { fg = sage, underline = true })
-hl(0, "@markup.raw", { fg = gold })
-hl(0, "@markup.strong", { bold = true })
-hl(0, "@markup.italic", { italic = true })
-hl(0, "@markup.list", { fg = terra })
+		-- Selection and search
+		Visual = { bg = c.bg4 },
+		VisualNOS = { bg = c.bg3 },
+		Search = { fg = c.bg0, bg = c.gold },
+		IncSearch = { fg = c.bg0, bg = c.terra },
+		CurSearch = { fg = c.bg0, bg = c.gold },
+		Substitute = { fg = c.bg0, bg = c.terra },
+		QuickFixLine = { bg = bg(c.bg2) },
 
--- LSP
-hl(0, "DiagnosticError", { fg = terra })
-hl(0, "DiagnosticWarn", { fg = gold })
-hl(0, "DiagnosticInfo", { fg = sage })
-hl(0, "DiagnosticHint", { fg = mist })
-hl(0, "DiagnosticOk", { fg = green })
-hl(0, "DiagnosticUnderlineError", { undercurl = true, sp = terra })
-hl(0, "DiagnosticUnderlineWarn", { undercurl = true, sp = gold })
-hl(0, "DiagnosticUnderlineInfo", { undercurl = true, sp = sage })
-hl(0, "DiagnosticUnderlineHint", { undercurl = true, sp = mist })
-hl(0, "LspReferenceText", { bg = bg3 })
-hl(0, "LspReferenceRead", { bg = bg3 })
-hl(0, "LspReferenceWrite", { bg = bg4 })
-hl(0, "LspInlayHint", { fg = fg3, bg = bg1, italic = true })
+		-- Statusline and tabs
+		StatusLine = { fg = c.fg1, bg = bg(c.bg2) },
+		StatusLineNC = { fg = c.fg3, bg = bg(c.bg1) },
+		WildMenu = { fg = c.bg0, bg = c.green, bold = config.bold },
+		TabLine = { fg = c.fg2, bg = bg(c.bg1) },
+		TabLineSel = { fg = c.fg0, bg = bg(c.bg3) },
+		TabLineFill = { bg = bg(c.bg1) },
+		WinBar = { fg = c.fg2, bg = bg(c.bg0) },
+		WinBarNC = { fg = c.fg3, bg = bg(c.bg1) },
 
--- Git
-hl(0, "DiffAdd", { fg = green, bg = bg1 })
-hl(0, "DiffChange", { fg = gold, bg = bg1 })
-hl(0, "DiffDelete", { fg = terra, bg = bg1 })
-hl(0, "DiffText", { fg = bg0, bg = gold })
-hl(0, "GitSignsAdd", { fg = green })
-hl(0, "GitSignsChange", { fg = gold })
-hl(0, "GitSignsDelete", { fg = terra })
+		-- Floating menus
+		Pmenu = { fg = c.fg1, bg = bg(c.bg2) },
+		PmenuSel = { fg = c.fg0, bg = c.bg4 },
+		PmenuSbar = { bg = bg(c.bg2) },
+		PmenuThumb = { bg = c.bg3 },
+		FloatBorder = { fg = c.bg3, bg = bg(c.bg2) },
+		FloatTitle = { fg = c.sage, bg = bg(c.bg2) },
 
--- Telescope
-hl(0, "TelescopeNormal", { fg = fg1, bg = bg1 })
-hl(0, "TelescopeBorder", { fg = bg3, bg = bg1 })
-hl(0, "TelescopePromptNormal", { fg = fg0, bg = bg2 })
-hl(0, "TelescopePromptBorder", { fg = bg3, bg = bg2 })
-hl(0, "TelescopePromptTitle", { fg = bg0, bg = green })
-hl(0, "TelescopePreviewTitle", { fg = bg0, bg = sage })
-hl(0, "TelescopeResultsTitle", { fg = fg3, bg = bg1 })
-hl(0, "TelescopeSelection", { bg = bg4 })
-hl(0, "TelescopeMatching", { fg = gold, bold = true })
+		-- Messages
+		ErrorMsg = { fg = c.terra, bold = config.bold },
+		WarningMsg = { fg = c.gold },
+		MoreMsg = { fg = c.green },
+		ModeMsg = { fg = c.fg2 },
+		Question = { fg = c.sage },
 
--- Neo-tree
-hl(0, "NeoTreeNormal", { fg = fg1, bg = bg1 })
-hl(0, "NeoTreeNormalNC", { fg = fg2, bg = bg1 })
-hl(0, "NeoTreeRootName", { fg = green, bold = true })
-hl(0, "NeoTreeDirectoryName", { fg = fg1 })
-hl(0, "NeoTreeFileName", { fg = fg1 })
-hl(0, "NeoTreeGitAdded", { fg = green })
-hl(0, "NeoTreeGitModified", { fg = gold })
-hl(0, "NeoTreeGitDeleted", { fg = terra })
-hl(0, "NeoTreeIndentMarker", { fg = bg3 })
-hl(0, "NeoTreeWinSeparator", { fg = bg3, bg = bg1 })
+		-- Base syntax
+		Comment = { fg = c.fg3, italic = config.italic.comments },
+		Constant = { fg = c.gold },
+		String = { fg = c.gold, italic = config.italic.strings },
+		Character = { fg = c.gold },
+		Number = { fg = c.gold_d },
+		Boolean = { fg = c.terra },
+		Float = { fg = c.gold_d },
+		Identifier = { fg = c.fg0 },
+		Function = { fg = c.mist },
+		Statement = { fg = c.green_d, bold = config.bold },
+		Conditional = { fg = c.green_d, bold = config.bold },
+		Repeat = { fg = c.green_d, bold = config.bold },
+		Label = { fg = c.green },
+		Operator = { fg = c.sage, italic = config.italic.operators },
+		Keyword = { fg = c.green_d, bold = config.bold },
+		Exception = { fg = c.terra, bold = config.bold },
+		PreProc = { fg = c.linen },
+		Include = { fg = c.linen },
+		Define = { fg = c.linen },
+		Macro = { fg = c.linen },
+		PreCondit = { fg = c.linen },
+		Type = { fg = c.linen },
+		StorageClass = { fg = c.linen },
+		Structure = { fg = c.linen },
+		Typedef = { fg = c.linen },
+		Special = { fg = c.sage },
+		SpecialChar = { fg = c.sage },
+		Tag = { fg = c.terra },
+		Delimiter = { fg = c.fg2 },
+		SpecialComment = { fg = c.fg2, italic = config.italic.comments },
+		Debug = { fg = c.terra },
+		Underlined = { underline = config.underline },
+		Ignore = { fg = c.bg3 },
+		Error = { fg = c.terra, bold = config.bold },
+		Todo = { fg = c.bg0, bg = c.gold, bold = config.bold },
 
--- Which-key
-hl(0, "WhichKey", { fg = sage })
-hl(0, "WhichKeyGroup", { fg = green })
-hl(0, "WhichKeyDesc", { fg = fg1 })
-hl(0, "WhichKeyBorder", { fg = bg3 })
-hl(0, "WhichKeyFloat", { bg = bg2 })
+		-- Treesitter
+		["@comment"] = { link = "Comment" },
+		["@none"] = { fg = "NONE", bg = "NONE" },
+		["@variable"] = { fg = c.fg0 },
+		["@variable.builtin"] = { fg = c.terra },
+		["@variable.parameter"] = { fg = c.fg1 },
+		["@variable.member"] = { fg = c.fg0 },
+		["@constant"] = { fg = c.gold },
+		["@constant.builtin"] = { fg = c.gold, bold = config.bold },
+		["@constant.macro"] = { fg = c.linen },
+		["@string"] = { fg = c.gold, italic = config.italic.strings },
+		["@string.escape"] = { fg = c.sage },
+		["@string.regex"] = { fg = c.sage },
+		["@string.special"] = { fg = c.sage },
+		["@number"] = { fg = c.gold_d },
+		["@number.float"] = { fg = c.gold_d },
+		["@boolean"] = { fg = c.terra },
+		["@float"] = { fg = c.gold_d },
+		["@function"] = { fg = c.mist },
+		["@function.builtin"] = { fg = c.mist, italic = true },
+		["@function.call"] = { fg = c.mist },
+		["@function.macro"] = { fg = c.linen },
+		["@function.method"] = { fg = c.mist },
+		["@function.method.call"] = { fg = c.mist },
+		["@method"] = { link = "@function.method" },
+		["@method.call"] = { link = "@function.method.call" },
+		["@constructor"] = { fg = c.linen },
+		["@keyword"] = { fg = c.green_d, bold = config.bold },
+		["@keyword.function"] = { fg = c.green_d, bold = config.bold },
+		["@keyword.modifier"] = { fg = c.gold_d, italic = true },
+		["@keyword.type"] = { fg = c.green, bold = config.bold },
+		["@keyword.return"] = { fg = c.terra, bold = config.bold },
+		["@keyword.operator"] = { fg = c.sage },
+		["@keyword.import"] = { fg = c.linen },
+		["@keyword.conditional"] = { fg = c.green_d, bold = config.bold },
+		["@keyword.repeat"] = { fg = c.green_d, bold = config.bold },
+		["@keyword.exception"] = { fg = c.terra, bold = config.bold },
+		["@keyword.directive"] = { link = "PreProc" },
+		["@type"] = { fg = c.linen },
+		["@type.java"] = { fg = c.linen, bold = config.bold },
+		["@type.builtin"] = { fg = c.linen, italic = true },
+		["@type.definition"] = { fg = c.linen },
+		["@type.qualifier"] = { link = "@keyword.modifier" },
+		["@attribute"] = { fg = c.sage },
+		["@property"] = { fg = c.fg1 },
+		["@operator"] = { fg = c.sage, italic = config.italic.operators },
+		["@punctuation"] = { fg = c.fg2 },
+		["@punctuation.bracket"] = { fg = c.fg2 },
+		["@punctuation.delimiter"] = { fg = c.fg2 },
+		["@punctuation.special"] = { fg = c.sage },
+		["@tag"] = { fg = c.terra },
+		["@tag.attribute"] = { fg = c.sage },
+		["@tag.delimiter"] = { fg = c.fg3 },
+		["@markup"] = { fg = c.fg1 },
+		["@markup.heading"] = { fg = c.green, bold = config.bold },
+		["@markup.link"] = { fg = c.mist, underline = config.underline },
+		["@markup.link.url"] = { fg = c.sage, underline = config.underline },
+		["@markup.raw"] = { fg = c.gold },
+		["@markup.strong"] = { bold = config.bold },
+		["@markup.italic"] = { italic = config.italic.emphasis },
+		["@markup.list"] = { fg = c.terra },
+		["@markup.list.checked"] = { fg = c.green },
+		["@markup.list.unchecked"] = { fg = c.fg3 },
+		["@diff.plus"] = { link = "DiffAdd" },
+		["@diff.minus"] = { link = "DiffDelete" },
+		["@diff.delta"] = { link = "DiffChange" },
+		["@module"] = { fg = c.fg1 },
+		["@namespace"] = { link = "@module" },
 
--- Indent blankline
-hl(0, "IblIndent", { fg = bg2 })
-hl(0, "IblScope", { fg = bg3 })
+		-- LSP semantic tokens
+		["@lsp.type.class"] = { link = "@type" },
+		["@lsp.type.class.java"] = { link = "@type.java" },
+		["@lsp.type.interface"] = { link = "@type" },
+		["@lsp.type.enum"] = { link = "@type" },
+		["@lsp.type.type"] = { link = "@type" },
+		["@lsp.type.typeParameter"] = { link = "@type.definition" },
+		["@lsp.type.method"] = { link = "@function.method" },
+		["@lsp.type.function"] = { link = "@function" },
+		["@lsp.type.property"] = { link = "@property" },
+		["@lsp.type.variable"] = { link = "@variable" },
+		["@lsp.type.parameter"] = { link = "@variable.parameter" },
+		["@lsp.type.enumMember"] = { link = "@constant" },
+		["@lsp.type.modifier"] = { link = "@keyword.modifier" },
+		["@lsp.type.modifier.java"] = { link = "@keyword.modifier" },
+		["@lsp.mod.public.java"] = { link = "@keyword.modifier" },
+		["@lsp.mod.private.java"] = { link = "@keyword.modifier" },
+		["@lsp.mod.protected.java"] = { link = "@keyword.modifier" },
+		["@lsp.typemod.class.public.java"] = { link = "@type.java" },
 
--- nvim-cmp
-hl(0, "CmpItemAbbr", { fg = fg1 })
-hl(0, "CmpItemAbbrMatch", { fg = gold, bold = true })
-hl(0, "CmpItemAbbrMatchFuzzy", { fg = gold })
-hl(0, "CmpItemKind", { fg = sage })
-hl(0, "CmpItemMenu", { fg = fg3 })
-hl(0, "CmpNormal", { bg = bg2 })
-hl(0, "CmpBorder", { fg = bg3 })
+		-- Diagnostics and LSP UI
+		DiagnosticError = { fg = c.terra },
+		DiagnosticWarn = { fg = c.gold },
+		DiagnosticInfo = { fg = c.sage },
+		DiagnosticHint = { fg = c.mist },
+		DiagnosticOk = { fg = c.green },
+		DiagnosticSignError = { fg = c.terra, bg = bg(c.bg0) },
+		DiagnosticSignWarn = { fg = c.gold, bg = bg(c.bg0) },
+		DiagnosticSignInfo = { fg = c.sage, bg = bg(c.bg0) },
+		DiagnosticSignHint = { fg = c.mist, bg = bg(c.bg0) },
+		DiagnosticUnderlineError = { undercurl = config.undercurl, sp = c.terra },
+		DiagnosticUnderlineWarn = { undercurl = config.undercurl, sp = c.gold },
+		DiagnosticUnderlineInfo = { undercurl = config.undercurl, sp = c.sage },
+		DiagnosticUnderlineHint = { undercurl = config.undercurl, sp = c.mist },
+		DiagnosticVirtualTextError = { fg = c.terra, bg = bg(c.bg1) },
+		DiagnosticVirtualTextWarn = { fg = c.gold, bg = bg(c.bg1) },
+		DiagnosticVirtualTextInfo = { fg = c.sage, bg = bg(c.bg1) },
+		DiagnosticVirtualTextHint = { fg = c.mist, bg = bg(c.bg1) },
+		LspReferenceText = { bg = c.bg3 },
+		LspReferenceRead = { bg = c.bg3 },
+		LspReferenceWrite = { bg = c.bg4 },
+		LspInlayHint = { fg = c.fg3, bg = bg(c.bg1), italic = true },
+		LspCodeLens = { fg = c.fg3 },
+		LspSignatureActiveParameter = { bg = c.bg3, bold = config.bold },
 
--- Mini statusline
-hl(0, "MiniStatuslineModeNormal", { fg = bg0, bg = green, bold = true })
-hl(0, "MiniStatuslineModeInsert", { fg = bg0, bg = gold, bold = true })
-hl(0, "MiniStatuslineModeVisual", { fg = bg0, bg = sage, bold = true })
-hl(0, "MiniStatuslineModeCommand", { fg = bg0, bg = terra, bold = true })
-hl(0, "MiniStatuslineModeReplace", { fg = bg0, bg = linen, bold = true })
-hl(0, "MiniStatuslineFilename", { fg = fg1, bg = bg2 })
-hl(0, "MiniStatuslineFileinfo", { fg = fg2, bg = bg2 })
-hl(0, "MiniStatuslineInactive", { fg = fg3, bg = bg1 })
+		-- Git and diffs
+		DiffAdd = { fg = c.green, bg = bg(c.bg1) },
+		DiffChange = { fg = c.gold, bg = bg(c.bg1) },
+		DiffDelete = { fg = c.terra, bg = bg(c.bg1) },
+		DiffText = { fg = c.bg0, bg = c.gold },
+		GitSignsAdd = { fg = c.green },
+		GitSignsChange = { fg = c.gold },
+		GitSignsDelete = { fg = c.terra },
+		DiffviewStatusModified = { fg = c.gold, bold = config.bold },
+		DiffviewFilePanelInsertions = { fg = c.green, bold = config.bold },
+		DiffviewFilePanelDeletions = { fg = c.terra, bold = config.bold },
 
--- Snacks.nvim picker + explorer highlights
--- Must use VimEnter autocmd — snacks overrides these on first launch otherwise
-vim.api.nvim_create_autocmd("VimEnter", {
-	callback = function()
-		local hl = vim.api.nvim_set_hl
+		-- Markdown
+		RenderMarkdownCode = { bg = bg(c.bg0) },
+		RenderMarkdownUnchecked = { fg = c.fg3 },
+		RenderMarkdownChecked = { fg = c.green },
 
-		-- Picker chrome
-		hl(0, "SnacksPickerNormal", { fg = fg1, bg = bg1 })
-		hl(0, "SnacksPickerBorder", { fg = bg3, bg = bg1 })
-		hl(0, "SnacksPickerTitle", { fg = bg0, bg = green })
-		hl(0, "SnacksPickerFooter", { fg = fg3, bg = bg1 })
+		-- Which-key
+		WhichKey = { fg = c.sage },
+		WhichKeyGroup = { fg = c.green },
+		WhichKeyDesc = { fg = c.fg1 },
+		WhichKeyBorder = { fg = c.bg3 },
+		WhichKeyFloat = { bg = bg(c.bg2) },
+		WhichKeyTitle = { link = "FloatTitle" },
 
-		-- Input / prompt
-		hl(0, "SnacksPickerInput", { fg = fg0, bg = bg2 })
-		hl(0, "SnacksPickerInputBorder", { fg = bg3, bg = bg2 })
-		hl(0, "SnacksPickerInputTitle", { fg = bg0, bg = sage })
-		hl(0, "SnacksPickerPrompt", { fg = green, bg = bg2 })
+		-- nvim-cmp
+		CmpItemAbbr = { fg = c.fg1 },
+		CmpItemAbbrDeprecated = { fg = c.fg3, strikethrough = config.strikethrough },
+		CmpItemAbbrMatch = { fg = c.gold, bold = config.bold },
+		CmpItemAbbrMatchFuzzy = { fg = c.gold },
+		CmpItemKind = { fg = c.sage },
+		CmpItemKindText = { fg = c.gold },
+		CmpItemKindVariable = { fg = c.fg1 },
+		CmpItemKindMethod = { fg = c.mist },
+		CmpItemKindFunction = { fg = c.mist },
+		CmpItemKindConstructor = { fg = c.linen },
+		CmpItemKindClass = { fg = c.linen },
+		CmpItemKindInterface = { fg = c.linen },
+		CmpItemKindModule = { fg = c.sage },
+		CmpItemKindProperty = { fg = c.fg1 },
+		CmpItemKindKeyword = { fg = c.green_d, bold = config.bold },
+		CmpItemKindSnippet = { fg = c.green },
+		CmpItemKindFile = { fg = c.mist },
+		CmpItemMenu = { fg = c.fg3 },
+		CmpNormal = { bg = bg(c.bg2) },
+		CmpBorder = { fg = c.bg3 },
 
-		-- List
-		hl(0, "SnacksPickerList", { fg = fg1, bg = bg0 })
-		hl(0, "SnacksPickerListCursorLine", { fg = fg0, bg = bg4 })
-		hl(0, "SnacksPickerMatch", { fg = gold, bold = true })
+		-- Mini
+		MiniStatuslineModeNormal = { fg = c.bg0, bg = c.green, bold = config.bold },
+		MiniStatuslineModeInsert = { fg = c.bg0, bg = c.gold, bold = config.bold },
+		MiniStatuslineModeVisual = { fg = c.bg0, bg = c.sage, bold = config.bold },
+		MiniStatuslineModeCommand = { fg = c.bg0, bg = c.terra, bold = config.bold },
+		MiniStatuslineModeReplace = { fg = c.bg0, bg = c.linen, bold = config.bold },
+		MiniStatuslineFilename = { fg = c.fg1, bg = bg(c.bg2) },
+		MiniStatuslineFileinfo = { fg = c.fg2, bg = bg(c.bg2) },
+		MiniStatuslineInactive = { fg = c.fg3, bg = bg(c.bg1) },
+		MiniIconsDirectory = { fg = c.sage },
+		MiniIconsAzure = { fg = c.sage },
+		MiniIconsBlue = { fg = c.mist },
+		MiniIconsCyan = { fg = c.sage },
+		MiniIconsGrey = { fg = c.fg2 },
+		MiniIconsGreen = { fg = c.green },
+		MiniIconsYellow = { fg = c.gold },
+		MiniIconsOrange = { fg = c.terra },
+		MiniIconsRed = { fg = c.terra },
+		MiniIconsPurple = { fg = c.linen },
 
-		-- File paths
-		hl(0, "SnacksPickerFile", { fg = fg1 })
-		hl(0, "SnacksPickerDir", { fg = fg2 })
-		hl(0, "SnacksPickerPathHidden", { fg = fg3 })
-		hl(0, "SnacksPickerPathIgnored", { fg = bg3 })
+		-- Snacks picker/explorer/notifier/dashboard/indent/words
+		SnacksPickerNormal = { fg = c.fg1, bg = bg(c.bg1) },
+		SnacksPickerBorder = { fg = c.bg3, bg = bg(c.bg1) },
+		SnacksPickerTitle = { fg = c.bg0, bg = c.green },
+		SnacksPickerFooter = { fg = c.fg3, bg = bg(c.bg1) },
+		SnacksPickerInput = { fg = c.fg0, bg = bg(c.bg2) },
+		SnacksPickerInputBorder = { fg = c.bg3, bg = bg(c.bg2) },
+		SnacksPickerInputTitle = { fg = c.bg0, bg = c.sage },
+		SnacksPickerPrompt = { fg = c.green, bg = bg(c.bg2) },
+		SnacksPickerList = { fg = c.fg1, bg = bg(c.bg0) },
+		SnacksPickerListCursorLine = { fg = c.fg0, bg = c.bg4 },
+		SnacksPickerMatch = { fg = c.gold, bold = config.bold },
+		SnacksPickerFile = { fg = c.fg1 },
+		SnacksPickerDir = { fg = c.fg2 },
+		SnacksPickerPathHidden = { fg = c.fg3 },
+		SnacksPickerPathIgnored = { fg = c.bg3 },
+		SnacksPickerGitStatusAdded = { fg = c.green },
+		SnacksPickerGitStatusModified = { fg = c.gold },
+		SnacksPickerGitStatusDeleted = { fg = c.terra },
+		SnacksPickerGitStatusUntracked = { fg = c.sage },
+		SnacksPickerGitStatusIgnored = { fg = c.bg3 },
+		SnacksPickerGitStatusRenamed = { fg = c.linen },
+		SnacksPickerGitStatusCopied = { fg = c.linen },
+		SnacksPickerPreview = { fg = c.fg1, bg = bg(c.bg0) },
+		SnacksPickerPreviewBorder = { fg = c.bg3, bg = bg(c.bg0) },
+		SnacksPickerPreviewTitle = { fg = c.bg0, bg = c.mist },
+		SnacksPickerPreviewLine = { bg = bg(c.bg2) },
+		SnacksNotifierBorderInfo = { fg = c.sage },
+		SnacksNotifierBorderWarn = { fg = c.gold },
+		SnacksNotifierBorderError = { fg = c.terra },
+		SnacksNotifierBorderDebug = { fg = c.fg3 },
+		SnacksNotifierIconInfo = { fg = c.sage },
+		SnacksNotifierIconWarn = { fg = c.gold },
+		SnacksNotifierIconError = { fg = c.terra },
+		SnacksNotifierTitleInfo = { fg = c.sage },
+		SnacksNotifierTitleWarn = { fg = c.gold },
+		SnacksNotifierTitleError = { fg = c.terra },
+		SnacksDashboardNormal = { fg = c.fg1, bg = bg(c.bg0) },
+		SnacksDashboardDesc = { fg = c.fg2 },
+		SnacksDashboardFile = { fg = c.fg1 },
+		SnacksDashboardDir = { fg = c.fg2 },
+		SnacksDashboardHeader = { fg = c.green, bold = config.bold },
+		SnacksDashboardFooter = { fg = c.fg3, italic = true },
+		SnacksDashboardKey = { fg = c.gold, bold = config.bold },
+		SnacksDashboardIcon = { fg = c.sage },
+		SnacksDashboardSpecial = { fg = c.mist },
+		SnacksIndent = { fg = c.bg0 },
+		SnacksIndentScope = { fg = c.bg1 },
+		SnacksExplorerNormal = { fg = c.fg1, bg = bg(c.bg0) },
+		SnacksExplorerWinBar = { bg = bg(c.bg0) },
+		SnacksWordsRef = { bg = c.bg3 },
+		SnacksWordsRefCur = { bg = c.bg4 },
 
-		-- Git status in picker
-		hl(0, "SnacksPickerGitStatusAdded", { fg = green })
-		hl(0, "SnacksPickerGitStatusModified", { fg = gold })
-		hl(0, "SnacksPickerGitStatusDeleted", { fg = terra })
-		hl(0, "SnacksPickerGitStatusUntracked", { fg = sage })
-		hl(0, "SnacksPickerGitStatusIgnored", { fg = bg3 })
-		hl(0, "SnacksPickerGitStatusRenamed", { fg = linen })
-		hl(0, "SnacksPickerGitStatusCopied", { fg = linen })
+		-- DAP
+		DapBreakpointSymbol = { fg = c.terra, bg = bg(c.bg1) },
+		DapStoppedSymbol = { fg = c.green, bg = bg(c.bg1) },
+		DapUIBreakpointsCurrentLine = { fg = c.gold },
+		DapUIBreakpointsDisabledLine = { fg = c.fg3 },
+		DapUIBreakpointsInfo = { fg = c.sage },
+		DapUIBreakpointsLine = { fg = c.gold },
+		DapUIBreakpointsPath = { fg = c.mist },
+		DapUICurrentFrameName = { fg = c.linen },
+		DapUIDecoration = { fg = c.linen },
+		DapUIFloatBorder = { fg = c.sage },
+		DapUILineNumber = { fg = c.gold },
+		DapUIModifiedValue = { fg = c.terra },
+		DapUIScope = { fg = c.mist },
+		DapUISource = { fg = c.fg1 },
+		DapUIThread = { fg = c.mist },
+		DapUIType = { fg = c.linen },
+		DapUIUnavailable = { fg = c.fg3 },
+		DapUIWatchesEmpty = { fg = c.fg3 },
+		DapUIWatchesError = { fg = c.terra },
+		DapUIWatchesValue = { fg = c.gold },
+		DapUIWinSelect = { fg = c.gold, bold = config.bold },
 
-		-- Preview pane
-		hl(0, "SnacksPickerPreview", { fg = fg1, bg = bg0 })
-		hl(0, "SnacksPickerPreviewBorder", { fg = bg3, bg = bg0 })
-		hl(0, "SnacksPickerPreviewTitle", { fg = bg0, bg = mist })
-		hl(0, "SnacksPickerPreviewLine", { bg = bg2 })
+		-- Devicons
+		DevIconDefault = { fg = c.sage },
+	}
 
-		-- Notifications (snacks.notifier)
-		hl(0, "SnacksNotifierBorderInfo", { fg = sage })
-		hl(0, "SnacksNotifierBorderWarn", { fg = gold })
-		hl(0, "SnacksNotifierBorderError", { fg = terra })
-		hl(0, "SnacksNotifierBorderDebug", { fg = fg3 })
-		hl(0, "SnacksNotifierIconInfo", { fg = sage })
-		hl(0, "SnacksNotifierIconWarn", { fg = gold })
-		hl(0, "SnacksNotifierIconError", { fg = terra })
-		hl(0, "SnacksNotifierTitleInfo", { fg = sage })
-		hl(0, "SnacksNotifierTitleWarn", { fg = gold })
-		hl(0, "SnacksNotifierTitleError", { fg = terra })
+	for group, hl in pairs(config.overrides or {}) do
+		if groups[group] then
+			groups[group].link = nil
+		end
+		groups[group] = vim.tbl_extend("force", groups[group] or {}, hl)
+	end
 
-		-- Dashboard
-		hl(0, "SnacksDashboardNormal", { fg = fg1, bg = bg0 })
-		hl(0, "SnacksDashboardDesc", { fg = fg2 })
-		hl(0, "SnacksDashboardFile", { fg = fg1 })
-		hl(0, "SnacksDashboardDir", { fg = fg2 })
-		hl(0, "SnacksDashboardHeader", { fg = green, bold = true })
-		hl(0, "SnacksDashboardFooter", { fg = fg3, italic = true })
-		hl(0, "SnacksDashboardKey", { fg = gold, bold = true })
-		hl(0, "SnacksDashboardIcon", { fg = sage })
-		hl(0, "SnacksDashboardSpecial", { fg = mist })
+	return groups
+end
 
-		-- Indent guides (snacks.indent)
-		--
-		hl(0, "SnacksIndent", { fg = bg0 })
-		hl(0, "SnacksIndentScope", { fg = bg1 })
+---@param config CuimhneConfig?
+function Cuimhne.setup(config)
+	Cuimhne.config = vim.deepcopy(default_config)
+	Cuimhne.config = vim.tbl_deep_extend("force", Cuimhne.config, config or {})
+end
 
-		hl(0, "SnacksExplorerNormal", { fg = fg1, bg = bg0 })
-		hl(0, "SnacksExplorerWinBar", { bg = bg0 })
-		-- Words (snacks.words — highlights current word refs)
-		hl(0, "SnacksWordsRef", { bg = bg3 })
-		hl(0, "SnacksWordsRefCur", { bg = bg4 })
-	end,
-})
+function Cuimhne.load()
+	if vim.g.colors_name then
+		vim.cmd("highlight clear")
+	end
 
--- nvim-web-devicons / mini.icons folder override
-hl(0, "DevIconDefault", { fg = sage })
-hl(0, "MiniIconsDirectory", { fg = sage }) -- mini.icons folders
-hl(0, "Directory", { fg = sage }) -- built-in dir highlight
--- mini.icons — override directory/folder colour
-hl(0, "MiniIconsAzure", { fg = "#A8B898" }) -- this is the default folder colour
-hl(0, "MiniIconsBlue", { fg = "#8FA89C" }) -- mist — used for some file types
-hl(0, "MiniIconsCyan", { fg = "#A8B898" }) -- also used on some dirs
-hl(0, "MiniIconsGrey", { fg = "#9C9488" }) -- fg2 — muted stone
-hl(0, "MiniIconsGreen", { fg = "#7FA688" }) -- keep brand green
-hl(0, "MiniIconsYellow", { fg = "#C4A882" }) -- keep gold
-hl(0, "MiniIconsOrange", { fg = "#C47A5A" }) -- keep terracotta
-hl(0, "MiniIconsRed", { fg = "#C47A5A" }) -- terracotta
-hl(0, "MiniIconsPurple", { fg = "#B8A898" }) -- linen — desaturated
+	vim.g.colors_name = "cuimhne"
+	vim.o.termguicolors = true
+
+	for group, settings in pairs(get_groups()) do
+		vim.api.nvim_set_hl(0, group, settings)
+	end
+
+	-- Snacks can override some groups during startup; re-apply after UI/plugin init.
+	vim.api.nvim_create_autocmd("VimEnter", {
+		group = vim.api.nvim_create_augroup("cuimhne-refresh-plugin-highlights", { clear = true }),
+		callback = function()
+			for group, settings in pairs(get_groups()) do
+				if group:match("^Snacks") then
+					vim.api.nvim_set_hl(0, group, settings)
+				end
+			end
+		end,
+	})
+end
+
+Cuimhne.load()
+
+return Cuimhne

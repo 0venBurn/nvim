@@ -1,13 +1,14 @@
 vim.g.mapleader = " "
 
 local keymap = vim.keymap
+local opts = { noremap = true, silent = true }
 
-keymap.set("i", "jk", "<ESC>") -- exit insert mode with jk
-keymap.set("n", "<leader>wq", ":wq<CR>") -- save and quit
-keymap.set("n", "<leader>qq", ":q!<CR>") -- quit without saving
-keymap.set("n", "<leader>ww", ":w<CR>") -- save
-keymap.set("n", "gx", ":!open <c-r><c-a><CR>") -- open URL under cursor
-
+-- General
+keymap.set("i", "jk", "<ESC>", { desc = "Exit insert mode" })
+keymap.set("n", "gx", ":!open <c-r><c-a><CR>", { desc = "Open URL under cursor" })
+keymap.set("n", "<leader>wq", ":wq<CR>", { desc = "Save and quit" })
+keymap.set("n", "<leader>qq", ":q!<CR>", { desc = "Quit without saving" })
+keymap.set("n", "<leader>ww", ":w<CR>", { desc = "Save file" })
 keymap.set("n", "<leader><leader>x", function()
 	local file = vim.fn.expand("%:p")
 	local output = vim.fn.system("python3 " .. file)
@@ -27,251 +28,75 @@ keymap.set("n", "<leader><leader>x", function()
 		style = "minimal",
 		border = "rounded",
 	})
-end, { desc = "Execute the current file" })
+end, { desc = "Execute current Python file" })
 
--- Move current line or selected lines up
-keymap.set("n", "K", ":move .-2<CR>==", { noremap = true, silent = true })
-keymap.set("v", "K", ":move '<-2<CR>gv=gv", { noremap = true, silent = true })
+-- Move lines
+keymap.set("n", "K", ":move .-2<CR>==", vim.tbl_extend("force", opts, { desc = "Move line up" }))
+keymap.set("v", "K", ":move '<-2<CR>gv=gv", vim.tbl_extend("force", opts, { desc = "Move selection up" }))
+keymap.set("n", "J", ":move .+1<CR>==", vim.tbl_extend("force", opts, { desc = "Move line down" }))
+keymap.set("v", "J", ":move '>+1<CR>gv=gv", vim.tbl_extend("force", opts, { desc = "Move selection down" }))
 
-keymap.set("n", "<leader>pb", ":bp<CR>", { noremap = true, silent = true })
-keymap.set("n", "<leader>nb", ":bp<CR>", { noremap = true, silent = true })
+-- Splits / windows
+keymap.set("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" })
+keymap.set("n", "<leader>se", "<C-w>=", { desc = "Equalize split sizes" })
+keymap.set("n", "<leader>sx", ":close<CR>", { desc = "Close split" })
+keymap.set("n", "<leader>sj", "<C-w>-", { desc = "Decrease split height" })
+keymap.set("n", "<leader>sk", "<C-w>+", { desc = "Increase split height" })
+keymap.set("n", "<leader>sl", "<C-w>>5", { desc = "Increase split width" })
+keymap.set("n", "<leader>sh", "<C-w><5", { desc = "Decrease split width" })
+keymap.set("n", "<leader>sm", ":only<CR>", { desc = "Maximize current split" })
 
--- Move current line or selected lines down
-keymap.set("n", "J", ":move .+1<CR>==", { noremap = true, silent = true })
-keymap.set("v", "J", ":move '>+1<CR>gv=gv", { noremap = true, silent = true })
+-- Tabs
+keymap.set("n", "<leader>to", ":tabnew<CR>", { desc = "Open new tab" })
+keymap.set("n", "<leader>tx", ":tabclose<CR>", { desc = "Close tab" })
+keymap.set("n", "<leader>tn", ":tabn<CR>", { desc = "Next tab" })
+keymap.set("n", "<leader>tp", ":tabp<CR>", { desc = "Previous tab" })
 
--- Split window management
-keymap.set("n", "<leader>sv", "<C-w>v") -- split window vertically
-keymap.set("n", "<leader>sh", "<C-w>s") -- split window horizontally
-keymap.set("n", "<leader>se", "<C-w>=") -- make split windows equal width
-keymap.set("n", "<leader>sx", ":close<CR>") -- close split window
-keymap.set("n", "<leader>sj", "<C-w>-") -- make split window height shorter
-keymap.set("n", "<leader>sk", "<C-w>+") -- make split windows height taller
-keymap.set("n", "<leader>sl", "<C-w>>5") -- make split windows width bigger
-keymap.set("n", "<leader>sh", "<C-w><5") -- make split windows width smaller
+-- Buffers
+keymap.set("n", "<leader>bn", ":bnext<CR>", { desc = "Next buffer" })
+keymap.set("n", "<leader>bp", ":bprevious<CR>", { desc = "Previous buffer" })
+keymap.set("n", "<leader>bub", ":b#<CR>", { desc = "Toggle previous buffer" })
+keymap.set("n", "<leader>bb", ":bdelete<CR>", { desc = "Delete buffer" })
+keymap.set("n", "<leader>bl", ":buffers<CR>", { desc = "List buffers" })
 
--- Tab management
-keymap.set("n", "<leader>to", ":tabnew<CR>") -- open a new tab
-keymap.set("n", "<leader>tx", ":tabclose<CR>") -- close a tab
-keymap.set("n", "<leader>tn", ":tabn<CR>") -- next tab
-keymap.set("n", "<leader>tp", ":tabp<CR>") -- previous tab
-keymap.set("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>")
-keymap.set("n", "<C-j>", "<cmd>TmuxNavigateDown<CR>")
-keymap.set("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>")
-keymap.set("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>")
-keymap.set("n", "<C-\\>", "<cmd>TmuxNavigatePrevious<CR>")
-
--- Buffer management
-keymap.set("n", "<leader>bn", ":bnext<CR>") -- Next buffer
-keymap.set("n", "<leader>bp", ":bprevious<CR>") -- Previous buffer
-keymap.set("n", "<leader>bb", ":b#<CR>") -- Toggle between current and last buffer
-keymap.set("n", "<leader>bd", ":bdelete<CR>") -- Delete current buffer
-keymap.set("n", "<leader>bl", ":buffers<CR>") -- List all buffers
-
--- Quickfix keymaps
-keymap.set("n", "<leader>qo", ":copen<CR>") -- open quickfix list
-keymap.set("n", "<leader>qf", ":cfirst<CR>") -- jump to first quickfix list item
-keymap.set("n", "<leader>qn", ":cnext<CR>") -- jump to next quickfix list item
-keymap.set("n", "<leader>qp", ":cprev<CR>") -- jump to prev quickfix list item
-keymap.set("n", "<leader>ql", ":clast<CR>") -- jump to last quickfix list item
-keymap.set("n", "<leader>qc", ":cclose<CR>") -- close quickfix list
-
--- Only window
-keymap.set("n", "<leader>sm", ":only<CR>") -- toggle maximize tab
-
-Snacks = require("snacks")
-
--- Explorer keymaps (replacing NvimTree)
-keymap.set("n", "<leader>e", function()
-	Snacks.explorer()
-end, { desc = "Toggle File Explorer" })
-
-keymap.set("n", "<leader>ee", function()
-	Snacks.explorer()
-end, { desc = "Toggle File Explorer" })
-
-keymap.set("n", "<leader>er", function()
-	Snacks.explorer({ focus = true })
-end, { desc = "Focus File Explorer" })
-
-keymap.set("n", "<leader>ef", function()
-	Snacks.explorer({ focus = true, follow_file = true })
-end, { desc = "Find File in Explorer" })
-
--- Replace telescope keymaps with snacks.picker
-keymap.set("n", "<leader>ff", function()
-	Snacks.picker.files()
-end, { desc = "Find Files" })
-
-keymap.set("n", "<leader>fg", function()
-	Snacks.picker.grep()
-end, { desc = "Live Grep" })
-
-keymap.set("n", "<leader>fb", function()
-	Snacks.picker.buffers()
-end, { desc = "Find Buffers" })
-
-keymap.set("n", "<leader>fh", function()
-	Snacks.picker.help()
-end, { desc = "Help Tags" })
-
-keymap.set("n", "<leader>fs", function()
-	Snacks.picker.lines()
-end, { desc = "Current Buffer Fuzzy Find" })
-
-keymap.set("n", "<leader>fo", function()
-	Snacks.picker.lsp_symbols()
-end, { desc = "LSP Document Symbols" })
-
-keymap.set("n", "<leader>fi", function()
-	Snacks.picker.lsp_references()
-end, { desc = "LSP Incoming Calls/References" })
-
-keymap.set("n", "<leader>fm", function()
-	Snacks.picker.lsp_symbols({ symbols = { "method", "function" } })
-end, { desc = "Find Methods/Functions" })
-
--- Additional useful snacks.picker keymaps you might want
-keymap.set("n", "<leader>fr", function()
-	Snacks.picker.recent()
-end, { desc = "Recent Files" })
-
-keymap.set("n", "<leader>fc", function()
-	Snacks.picker.files({ cwd = vim.fn.stdpath("config") })
-end, { desc = "Config Files" })
-
-keymap.set("n", "<leader>fd", function()
-	Snacks.picker.diagnostics()
-end, { desc = "Diagnostics" })
-
-keymap.set("n", "<leader>fw", function()
-	Snacks.picker.grep_word()
-end, { desc = "Grep Word Under Cursor" })
-
-keymap.set("n", "<leader>gF", function()
-	Snacks.picker.git_files()
-end, { desc = "Git Files" })
-
-keymap.set("n", "<leader>gc", function()
-	Snacks.picker.git_status()
-end, { desc = "Git Status" })
-
--- Smart picker (automatically chooses best source)
-keymap.set("n", "<leader><space>", function()
-	Snacks.picker.smart()
-end, { desc = "Smart Find" })
-
--- Quick access to picker with custom options
-keymap.set("n", "<leader>fF", function()
-	Snacks.picker.files({ hidden = true, ignored = true })
-end, { desc = "Find All Files (including hidden)" })
-
-keymap.set("n", "<leader>fG", function()
-	Snacks.picker.grep({ hidden = true, ignored = true })
-end, { desc = "Live Grep (including hidden)" })
-
--- Git
-keymap.set("n", "<leader>gb", ":GitBlameToggle<CR>") -- toggle git blame
-keymap.set("n", "<leader>git", ":LazyGit<CR>")
-
--- Harpoon
-keymap.set("n", "<leader>na", require("harpoon.mark").add_file)
-keymap.set("n", "<leader>nh", require("harpoon.ui").toggle_quick_menu)
-keymap.set("n", "<leader>n1", function()
-	require("harpoon.ui").nav_file(1)
-end)
-
-keymap.set("n", "<leader>n2", function()
-	require("harpoon.ui").nav_file(2)
-end)
-
-keymap.set("n", "<leader>n3", function()
-	require("harpoon.ui").nav_file(3)
-end)
-
-keymap.set("n", "<leader>n4", function()
-	require("harpoon.ui").nav_file(4)
-end)
-
-keymap.set("n", "<leader>n5", function()
-	require("harpoon.ui").nav_file(5)
-end)
-
--- Vim REST Console
-keymap.set("n", "<leader>xr", ":call VrcQuery()<CR>") -- Run REST query
+-- Quickfix
+keymap.set("n", "<leader>qo", ":copen<CR>", { desc = "Open quickfix list" })
+keymap.set("n", "<leader>qf", ":cfirst<CR>", { desc = "First quickfix item" })
+keymap.set("n", "<leader>qn", ":cnext<CR>", { desc = "Next quickfix item" })
+keymap.set("n", "<leader>qp", ":cprev<CR>", { desc = "Previous quickfix item" })
+keymap.set("n", "<leader>ql", ":clast<CR>", { desc = "Last quickfix item" })
+keymap.set("n", "<leader>qc", ":cclose<CR>", { desc = "Close quickfix list" })
 
 -- LSP
-keymap.set("n", "<leader>gg", "<cmd>lua vim.lsp.buf.hover()<CR>")
-keymap.set("n", "<leader>gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
-keymap.set("n", "<leader>gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
-keymap.set("n", "<leader>gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
-keymap.set("n", "<leader>gt", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
-keymap.set("n", "<leader>gr", "<cmd>lua vim.lsp.buf.references()<CR>")
-keymap.set("n", "<leader>gs", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
-keymap.set("n", "<leader>rr", "<cmd>lua vim.lsp.buf.rename()<CR>")
-keymap.set("n", "<leader>gf", "<cmd>lua vim.lsp.buf.format({async = true})<CR>")
-keymap.set("v", "<leader>gf", "<cmd>lua vim.lsp.buf.format({async = true})<CR>")
-keymap.set("n", "<leader>ga", "<cmd>lua vim.lsp.buf.code_action()<CR>")
-keymap.set("n", "<leader>gl", "<cmd>lua vim.diagnostic.open_float()<CR>")
-keymap.set("n", "<leader>gp", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
-keymap.set("n", "<leader>gn", "<cmd>lua vim.diagnostic.goto_next()<CR>")
-keymap.set("n", "<leader>tr", "<cmd>lua vim.lsp.buf.document_symbol()<CR>")
-keymap.set("i", "<C-Space>", "<cmd>lua vim.lsp.buf.completion()<CR>")
--- Filetype-specific keymaps (these can be done in the ftplugin directory instead if you prefer)
-keymap.set("n", "<leader>go", function()
-	if vim.bo.filetype == "java" then
-		require("jdtls").organize_imports()
+keymap.set("n", "<leader>lt", "<cmd>LspToggle<CR>", { desc = "Toggle LSP" })
+keymap.set("n", "<leader>lo", "<cmd>LspOn<CR>", { desc = "Turn LSP on" })
+keymap.set("n", "<leader>lO", "<cmd>LspOff<CR>", { desc = "Turn LSP off" })
+keymap.set("n", "<leader>ls", "<cmd>LspStatus<CR>", { desc = "Show LSP status" })
+keymap.set("n", "<leader>gg", function()
+	local source_buf = vim.api.nvim_get_current_buf()
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		local ok, hover_buf = pcall(vim.api.nvim_win_get_var, win, "textDocument/hover")
+		if ok and hover_buf == source_buf and vim.api.nvim_win_is_valid(win) then
+			vim.api.nvim_set_current_win(win)
+			vim.cmd("stopinsert")
+			return
+		end
 	end
-end)
+	vim.lsp.buf.hover()
+end, { desc = "LSP hover" })
+keymap.set("n", "<leader>gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { desc = "Go to definition" })
+keymap.set("n", "<leader>gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", { desc = "Go to declaration" })
+keymap.set("n", "<leader>gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", { desc = "Go to implementation" })
+keymap.set("n", "<leader>gt", "<cmd>lua vim.lsp.buf.type_definition()<CR>", { desc = "Go to type definition" })
+keymap.set("n", "<leader>gr", "<cmd>lua vim.lsp.buf.references()<CR>", { desc = "Go to references" })
+keymap.set("n", "<leader>gs", "<cmd>lua vim.lsp.buf.signature_help()<CR>", { desc = "Signature help" })
+keymap.set("n", "<leader>rr", "<cmd>lua vim.lsp.buf.rename()<CR>", { desc = "Rename symbol" })
+keymap.set("n", "<leader>gf", "<cmd>lua vim.lsp.buf.format({async = true})<CR>", { desc = "Format buffer" })
+keymap.set("v", "<leader>gf", "<cmd>lua vim.lsp.buf.format({async = true})<CR>", { desc = "Format selection" })
+keymap.set("n", "<leader>ga", "<cmd>lua vim.lsp.buf.code_action()<CR>", { desc = "Code action" })
+keymap.set("n", "<leader>gl", "<cmd>lua vim.diagnostic.open_float()<CR>", { desc = "Line diagnostics" })
+keymap.set("n", "<leader>gp", "<cmd>lua vim.diagnostic.goto_prev()<CR>", { desc = "Previous diagnostic" })
+keymap.set("n", "<leader>gn", "<cmd>lua vim.diagnostic.goto_next()<CR>", { desc = "Next diagnostic" })
+keymap.set("n", "<leader>tr", "<cmd>lua vim.lsp.buf.document_symbol()<CR>", { desc = "Document symbols" })
+keymap.set("i", "<C-Space>", "<cmd>lua vim.lsp.buf.completion()<CR>", { desc = "LSP completion" })
 
-keymap.set("n", "<leader>gu", function()
-	if vim.bo.filetype == "java" then
-		require("jdtls").update_projects_config()
-	end
-end)
-
-keymap.set("n", "<leader>tc", function()
-	if vim.bo.filetype == "java" then
-		require("jdtls").test_class()
-	end
-end)
-
-keymap.set("n", "<leader>tm", function()
-	if vim.bo.filetype == "java" then
-		require("jdtls").test_nearest_method()
-	end
-end)
-
--- Debugging
-keymap.set("n", "<leader>bb", "<cmd>lua require'dap'.toggle_breakpoint()<cr>")
-keymap.set("n", "<leader>bc", "<cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<cr>")
-keymap.set("n", "<leader>bl", "<cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<cr>")
-keymap.set("n", "<leader>br", "<cmd>lua require'dap'.clear_breakpoints()<cr>")
-
-keymap.set("n", "<leader>ba", "<cmd>Telescope dap list_breakpoints<cr>")
-keymap.set("n", "<leader>dc", "<cmd>lua require'dap'.continue()<cr>")
-keymap.set("n", "<leader>dj", "<cmd>lua require'dap'.step_over()<cr>")
-keymap.set("n", "<leader>dk", "<cmd>lua require'dap'.step_into()<cr>")
-keymap.set("n", "<leader>do", "<cmd>lua require'dap'.step_out()<cr>")
-keymap.set("n", "<leader>dd", function()
-	require("dap").disconnect()
-	require("dapui").close()
-end)
-keymap.set("n", "<leader>dt", function()
-	require("dap").terminate()
-	require("dapui").close()
-end)
-keymap.set("n", "<leader>dr", "<cmd>lua require'dap'.repl.toggle()<cr>")
-keymap.set("n", "<leader>dl", "<cmd>lua require'dap'.run_last()<cr>")
-keymap.set("n", "<leader>di", function()
-	require("dap.ui.widgets").hover()
-end)
-keymap.set("n", "<leader>d?", function()
-	local widgets = require("dap.ui.widgets")
-	widgets.centered_float(widgets.scopes)
-end)
-keymap.set("n", "<leader>df", "<cmd>Telescope dap frames<cr>")
-keymap.set("n", "<leader>dh", "<cmd>Telescope dap commands<cr>")
-keymap.set("n", "<leader>de", function()
-	require("telescope.builtin").diagnostics({ default_text = ":E:" })
-end)

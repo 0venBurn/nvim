@@ -1,4 +1,7 @@
+-- Debug adapter protocol UI and helpers
 return {
+	-- nvim-dap-ui.lua
+	{
 	"rcarriga/nvim-dap-ui",
 	event = "VeryLazy",
 	dependencies = {
@@ -61,9 +64,23 @@ return {
 		"mfussenegger/nvim-dap-python",
 		"leoluz/nvim-dap-go",
 		"mfussenegger/nvim-dap",
+		"nvim-neotest/nvim-nio",
 		"theHamsta/nvim-dap-virtual-text",
-		"nvim-telescope/telescope-dap.nvim",
-		"leoluz/nvim-dap-go",
+	},
+	keys = {
+		{ "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "DAP toggle breakpoint" },
+		{ "<leader>dB", function() require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: ")) end, desc = "DAP set log breakpoint" },
+		{ "<leader>dR", function() require("dap").clear_breakpoints() end, desc = "DAP clear breakpoints" },
+		{ "<leader>dc", function() require("dap").continue() end, desc = "DAP continue" },
+		{ "<leader>dj", function() require("dap").step_over() end, desc = "DAP step over" },
+		{ "<leader>dk", function() require("dap").step_into() end, desc = "DAP step into" },
+		{ "<leader>do", function() require("dap").step_out() end, desc = "DAP step out" },
+		{ "<leader>dd", function() require("dap").disconnect(); require("dapui").close() end, desc = "DAP disconnect" },
+		{ "<leader>dt", function() require("dap").terminate(); require("dapui").close() end, desc = "DAP terminate" },
+		{ "<leader>dr", function() require("dap").repl.toggle() end, desc = "DAP REPL toggle" },
+		{ "<leader>dl", function() require("dap").run_last() end, desc = "DAP run last" },
+		{ "<leader>di", function() require("dap.ui.widgets").hover() end, desc = "DAP inspect" },
+		{ "<leader>d?", function() local widgets = require("dap.ui.widgets"); widgets.centered_float(widgets.scopes) end, desc = "DAP scopes" },
 	},
 	opts = {
 		controls = {
@@ -144,7 +161,21 @@ return {
 	config = function(_, opts)
 		local dap = require("dap")
 		require("dapui").setup(opts)
-		require("dap-python").setup("/Users/evanmac/miniconda3/envs/nvim/bin/python")
+
+		local mason_debugpy = vim.fn.stdpath("data") .. "/mason/packages/debugpy"
+		local debugpy_python = mason_debugpy .. "/venv/bin/python"
+		if vim.fn.executable(debugpy_python) == 0 then
+			debugpy_python = vim.fn.exepath("python3") ~= "" and vim.fn.exepath("python3") or vim.fn.exepath("python")
+		end
+		require("dap-python").setup(debugpy_python)
+
+		local debugpy_adapter = mason_debugpy .. "/debugpy-adapter"
+		if vim.fn.executable(debugpy_adapter) == 1 then
+			dap.adapters.python = {
+				type = "executable",
+				command = debugpy_adapter,
+			}
+		end
 
 		dap.configurations.python = {
 			{
@@ -154,7 +185,12 @@ return {
 				program = "${file}",
 			},
 		}
-		require("dap-go").setup()
+		local dlv_path = vim.fn.stdpath("data") .. "/mason/bin/dlv"
+		require("dap-go").setup({
+			delve = {
+				path = vim.fn.executable(dlv_path) == 1 and dlv_path or "dlv",
+			},
+		})
 
 		dap.configurations.go = {
 			{
@@ -206,4 +242,24 @@ return {
 			},
 		}
 	end,
+},
+
+	-- nvim-dap-virtual-text.lua
+	{
+  -- https://github.com/theHamsta/nvim-dap-virtual-text
+  'theHamsta/nvim-dap-virtual-text',
+  lazy = true,
+  opts = {
+    -- Display debug text as a comment
+    commented = true,
+    -- Customize virtual text
+    display_callback = function(variable, buf, stackframe, node, options)
+      if options.virt_text_pos == 'inline' then
+        return ' = ' .. variable.value
+      else
+        return variable.name .. ' = ' .. variable.value
+      end
+    end,
+  }
+}
 }

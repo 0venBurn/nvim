@@ -1,7 +1,6 @@
 -- Bootstrap lazy
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-vim.g.lazyvim_check_order = false
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
 		"git",
@@ -13,24 +12,14 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 vim.opt.rtp:prepend(lazypath)
--- This has to be set before initializing lazy
--- Define an autocommand group
-local augroup_name = "MyHighlightYankGroup"
-vim.api.nvim_exec([[
-  augroup !]] .. augroup_name .. [[
-    autocmd!
-]], false)
 
--- Add the autocommand
-vim.api.nvim_exec(
-	[[
-  autocmd TextYankPost * silent lua vim.highlight.on_yank({higroup="IncSearch", timeout=150})
-]],
-	false
-)
 vim.g.mapleader = " "
 vim.g.highlightedyank_highlight_duration = 1000
 vim.opt.completeopt:append({ "noinsert", "popup" })
+
+-- Persistent LSP on/off switch. Commands: :LspOn, :LspOff, :LspToggle, :LspStatus
+require("core.lsp-toggle").setup()
+
 -- Initialize lazy with dynamic loading of anything in the plugins directory
 require("lazy").setup("plugins", {
 	change_detection = {
@@ -41,4 +30,7 @@ require("lazy").setup("plugins", {
 
 -- These modules are not loaded by lazy
 require("core.options")
+require("core.autocmds")
 require("core.keymaps")
+
+vim.cmd.colorscheme("cuimhne")
