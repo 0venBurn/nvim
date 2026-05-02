@@ -16,6 +16,9 @@ return {
 
 			require("mason").setup()
 			require("mason-lspconfig").setup({
+				-- Keep Mason from calling vim.lsp.enable() automatically.
+				-- LSPs should only start through :LspOn / :LspToggle.
+				automatic_enable = false,
 				ensure_installed = {
 					-- List of LSP servers to install automatically
 					"bashls",
