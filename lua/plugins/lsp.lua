@@ -29,7 +29,6 @@ return {
 					"solargraph",
 					"basedpyright",
 					"html",
-					"emmet_ls",
 					"gradle_ls",
 					"dockerls",
 					"docker_compose_language_service",
@@ -53,7 +52,6 @@ return {
 			require("mason-tool-installer").setup({
 				ensure_installed = {
 					"debugpy",
-					"delve",
 					"java-debug-adapter",
 					"java-test",
 					"eslint_d",

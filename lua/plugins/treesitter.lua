@@ -8,7 +8,8 @@ return {
 	lazy = false, -- treesitter does not support lazy-loading
 	dependencies = {
 		-- https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-		"nvim-treesitter/nvim-treesitter-textobjects",
+		-- Use the main branch to match nvim-treesitter's new main-branch API.
+		{ "nvim-treesitter/nvim-treesitter-textobjects", branch = "main" },
 	},
 	build = ":TSUpdate",
 	config = function()
