@@ -162,6 +162,14 @@ return {
 		local dap = require("dap")
 		require("dapui").setup(opts)
 
+		-- Register the Java DAP adapter up front. nvim-jdtls still needs to be
+		-- attached to the Java project for a session to actually start, but this
+		-- prevents `Config references missing adapter "java"` when dap.continue()
+		-- sees the Java configurations before jdtls finishes attaching.
+		pcall(function()
+			require("jdtls.dap").setup_dap({ hotcodereplace = "auto" })
+		end)
+
 		local mason_debugpy = vim.fn.stdpath("data") .. "/mason/packages/debugpy"
 		local debugpy_python = mason_debugpy .. "/venv/bin/python"
 		if vim.fn.executable(debugpy_python) == 0 then
@@ -221,10 +229,19 @@ return {
 
 		dap.configurations.java = {
 			{
-				name = "Debug Launch (2GB)",
+				name = "Debug Java main class (prompt)",
 				type = "java",
 				request = "launch",
-				vmArgs = "" .. "--enable-preview -Xmx2g ",
+				mainClass = function()
+					return vim.fn.input("Main class: ")
+				end,
+				vmArgs = "--enable-preview -Xmx2g",
+			},
+			{
+				name = "Debug current Java class (requires main)",
+				type = "java",
+				request = "launch",
+				vmArgs = "--enable-preview -Xmx2g",
 			},
 			{
 				name = "Debug Attach (8000)",

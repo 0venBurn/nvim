@@ -1,7 +1,5 @@
 local M = {}
 
-local state_file = vim.fn.stdpath("state") .. "/lsp-enabled"
-
 M.servers = {
 	"bashls",
 	"cssls",
@@ -28,28 +26,8 @@ M.servers = {
 	"emmet_ls",
 }
 
-local function read_state()
-	local f = io.open(state_file, "r")
-	if not f then
-		return false
-	end
-	local value = f:read("*a")
-	f:close()
-	return not value:match("^%s*off%s*$")
-end
-
-local function write_state(enabled)
-	vim.fn.mkdir(vim.fn.fnamemodify(state_file, ":h"), "p")
-	local f = assert(io.open(state_file, "w"))
-	f:write(enabled and "on" or "off")
-	f:close()
-end
-
 function M.is_enabled()
-	if vim.g.lsp_enabled == nil then
-		vim.g.lsp_enabled = read_state()
-	end
-	return vim.g.lsp_enabled ~= false
+	return vim.g.lsp_enabled == true
 end
 
 function M.servers_to_enable()
@@ -71,7 +49,6 @@ end
 function M.enable(opts)
 	opts = opts or {}
 	vim.g.lsp_enabled = true
-	write_state(true)
 	if vim.diagnostic and vim.diagnostic.enable then
 		vim.diagnostic.enable(true)
 	end
@@ -92,7 +69,6 @@ end
 function M.disable(opts)
 	opts = opts or {}
 	vim.g.lsp_enabled = false
-	write_state(false)
 	for _, server in ipairs(M.servers_to_enable()) do
 		enable_server(server, false)
 	end
@@ -136,7 +112,18 @@ function M.start_jdtls()
 	end
 
 	local jdtls_install = vim.fn.stdpath("data") .. "/mason/packages/jdtls"
-	local root_dir = jdtls.setup.find_root({ ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }) or vim.fn.getcwd()
+	local root_dir = jdtls.setup.find_root({
+		"mvnw",
+		"gradlew",
+		"pom.xml",
+		"build.gradle",
+		"build.gradle.kts",
+		"settings.gradle",
+		"settings.gradle.kts",
+		".project",
+		".classpath",
+		"Makefile",
+	}) or vim.fn.getcwd()
 	local project_name = vim.fn.fnamemodify(root_dir, ":p:t")
 	local workspace_dir = vim.fn.stdpath("cache") .. "/jdtls/workspace/" .. project_name
 
@@ -167,6 +154,22 @@ function M.start_jdtls()
 		return
 	end
 
+	local bundles = {}
+	local java_debug_bundle = vim.fn.glob(
+		vim.fn.stdpath("data") .. "/mason/packages/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar",
+		true
+	)
+	if java_debug_bundle ~= "" then
+		table.insert(bundles, java_debug_bundle)
+	else
+		vim.notify("jdtls: Java debug adapter bundle not found. Run :MasonInstall java-debug-adapter", vim.log.levels.WARN)
+	end
+
+	local java_test_bundles = vim.fn.glob(vim.fn.stdpath("data") .. "/mason/packages/java-test/extension/server/*.jar", true)
+	if java_test_bundles ~= "" then
+		vim.list_extend(bundles, vim.split(java_test_bundles, "\n", { trimempty = true }))
+	end
+
 	local config = {
 		cmd = {
 			java_bin,
@@ -191,23 +194,28 @@ function M.start_jdtls()
 			},
 		},
 		init_options = {
-			bundles = {},
+			bundles = bundles,
 		},
+		on_attach = function()
+			vim.defer_fn(function()
+				pcall(require("jdtls.dap").setup_dap_main_class_configs)
+			end, 1000)
+		end,
 	}
-	jdtls.start_or_attach(config)
+	jdtls.start_or_attach(config, { dap = { hotcodereplace = "auto" } })
 end
 
 function M.setup()
-	vim.g.lsp_enabled = read_state()
+	vim.g.lsp_enabled = false
 	vim.api.nvim_create_user_command("LspOn", function()
 		M.enable()
-	end, { desc = "Enable LSP and persist it" })
+	end, { desc = "Enable LSP for this Neovim session" })
 	vim.api.nvim_create_user_command("LspOff", function()
 		M.disable()
-	end, { desc = "Disable LSP and persist it" })
+	end, { desc = "Disable LSP for this Neovim session" })
 	vim.api.nvim_create_user_command("LspToggle", function()
 		M.toggle()
-	end, { desc = "Toggle LSP on/off and persist it" })
+	end, { desc = "Toggle LSP on/off for this Neovim session" })
 	vim.api.nvim_create_user_command("LspStatus", function()
 		M.status()
 	end, { desc = "Show LSP toggle status" })

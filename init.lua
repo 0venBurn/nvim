@@ -17,7 +17,7 @@ vim.g.mapleader = " "
 vim.g.highlightedyank_highlight_duration = 1000
 vim.opt.completeopt:append({ "noinsert", "popup" })
 
--- Persistent LSP on/off switch. Commands: :LspOn, :LspOff, :LspToggle, :LspStatus
+-- Session-only LSP on/off switch. Commands: :LspOn, :LspOff, :LspToggle, :LspStatus
 require("core.lsp-toggle").setup()
 
 -- Initialize lazy with dynamic loading of anything in the plugins directory
