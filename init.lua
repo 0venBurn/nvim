@@ -20,6 +20,15 @@ vim.opt.completeopt:append({ "noinsert", "popup" })
 -- Session-only LSP on/off switch. Commands: :LspOn, :LspOff, :LspToggle, :LspStatus
 require("core.lsp-toggle").setup()
 
+-- Run the current file in a floating output window. Command: :RunFile
+require("core.runner").setup({
+	-- Add more runners later by filetype, for example:
+	-- runners = {
+	-- 	javascript = { "node", "$file" },
+	-- 	sh = { "bash", "$file" },
+	-- },
+})
+
 -- Initialize lazy with dynamic loading of anything in the plugins directory
 require("lazy").setup("plugins", {
 	change_detection = {

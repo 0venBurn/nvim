@@ -9,26 +9,7 @@ keymap.set("n", "gx", ":!open <c-r><c-a><CR>", { desc = "Open URL under cursor" 
 keymap.set("n", "<leader>wq", ":wq<CR>", { desc = "Save and quit" })
 keymap.set("n", "<leader>qq", ":q!<CR>", { desc = "Quit without saving" })
 keymap.set("n", "<leader>ww", ":w<CR>", { desc = "Save file" })
-keymap.set("n", "<leader><leader>x", function()
-	local file = vim.fn.expand("%:p")
-	local output = vim.fn.system("python3 " .. file)
-
-	-- Show output in a floating window
-	local buf = vim.api.nvim_create_buf(false, true)
-	vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(output, "\n"))
-
-	local width = math.floor(vim.o.columns * 0.8)
-	local height = math.floor(vim.o.lines * 0.8)
-	vim.api.nvim_open_win(buf, true, {
-		relative = "editor",
-		width = width,
-		height = height,
-		col = math.floor((vim.o.columns - width) / 2),
-		row = math.floor((vim.o.lines - height) / 2),
-		style = "minimal",
-		border = "rounded",
-	})
-end, { desc = "Execute current Python file" })
+keymap.set("n", "<leader><leader>x", "<cmd>RunFile<CR>", { desc = "Run current file" })
 
 -- Move lines
 keymap.set("n", "K", ":move .-2<CR>==", vim.tbl_extend("force", opts, { desc = "Move line up" }))

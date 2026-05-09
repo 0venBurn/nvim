@@ -6,6 +6,7 @@ return {
 		version = "*",
 		keys = {
 			{ "<leader>div", "<cmd>DiffviewOpen origin/main...HEAD<cr>", desc = "Open diff view" },
+			{ "<leader>diw", "<cmd>DiffviewOpen<cr>", desc = "Open diff view" },
 			{ "<leader>dic", "<cmd>DiffviewClose<cr>", desc = "Close diff view" },
 		},
 	},
