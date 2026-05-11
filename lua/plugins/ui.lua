@@ -156,10 +156,11 @@ return {
 				enabled = true,
 				sources = {
 					files = { hidden = true, ignored = true },
+					grep = { hidden = true, ignored = true },
 					explorer = {
 						auto_close = true,
 						jump = { close = true },
-						tree = false,
+						tree = true,
 						follow_file = false,
 						win = {
 							list = {
