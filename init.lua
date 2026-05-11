@@ -20,6 +20,9 @@ vim.opt.completeopt:append({ "noinsert", "popup" })
 -- Session-only LSP on/off switch. Commands: :LspOn, :LspOff, :LspToggle, :LspStatus
 require("core.lsp-toggle").setup()
 
+-- Floating terminal. Keymap: <leader>j
+require("core.terminal").setup()
+
 -- Run the current file in a floating output window. Command: :RunFile
 require("core.runner").setup({
 	-- Add more runners later by filetype, for example:
