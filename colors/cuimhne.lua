@@ -202,7 +202,7 @@ local function get_groups()
 
 		-- Base syntax
 		Comment = { fg = c.fg3, italic = config.italic.comments },
-		Constant = { fg = c.gold },
+		Constant = { fg = c.linen },
 		String = { fg = c.gold, italic = config.italic.strings },
 		Character = { fg = c.gold },
 		Number = { fg = c.gold_d },
@@ -244,8 +244,8 @@ local function get_groups()
 		["@variable.builtin"] = { fg = c.terra },
 		["@variable.parameter"] = { fg = c.fg1 },
 		["@variable.member"] = { fg = c.fg0 },
-		["@constant"] = { fg = c.gold },
-		["@constant.builtin"] = { fg = c.gold, bold = config.bold },
+		["@constant"] = { fg = c.linen },
+		["@constant.builtin"] = { fg = c.linen, bold = config.bold },
 		["@constant.macro"] = { fg = c.linen },
 		["@string"] = { fg = c.gold, italic = config.italic.strings },
 		["@string.escape"] = { fg = c.sage },
