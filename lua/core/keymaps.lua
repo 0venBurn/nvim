@@ -9,7 +9,13 @@ keymap.set("n", "gx", ":!open <c-r><c-a><CR>", { desc = "Open URL under cursor" 
 keymap.set("n", "<leader>wq", ":wq<CR>", { desc = "Save and quit" })
 keymap.set("n", "<leader>qq", ":q!<CR>", { desc = "Quit without saving" })
 keymap.set("n", "<leader>ww", ":w<CR>", { desc = "Save file" })
-keymap.set("n", "<leader><leader>x", "<cmd>RunFile<CR>", { desc = "Run current file" })
+
+-- Run files
+keymap.set("n", "<leader>xf", "<cmd>RunFile<CR>", { desc = "Run current file" })
+keymap.set("n", "<leader>xp", "<cmd>RunPackage<CR>", { desc = "Run current package" })
+keymap.set("n", "<leader>xP", "<cmd>RunProject<CR>", { desc = "Run current project" })
+keymap.set("n", "<leader>xt", "<cmd>RunTests<CR>", { desc = "Run tests" })
+keymap.set("n", "<leader>xl", "<cmd>RunLast<CR>", { desc = "Run last command" })
 
 -- Move lines
 keymap.set("n", "K", ":move .-2<CR>==", vim.tbl_extend("force", opts, { desc = "Move line up" }))
@@ -80,4 +86,3 @@ keymap.set("n", "<leader>gp", "<cmd>lua vim.diagnostic.goto_prev()<CR>", { desc 
 keymap.set("n", "<leader>gn", "<cmd>lua vim.diagnostic.goto_next()<CR>", { desc = "Next diagnostic" })
 keymap.set("n", "<leader>tr", "<cmd>lua vim.lsp.buf.document_symbol()<CR>", { desc = "Document symbols" })
 keymap.set("i", "<C-Space>", "<cmd>lua vim.lsp.buf.completion()<CR>", { desc = "LSP completion" })
-
