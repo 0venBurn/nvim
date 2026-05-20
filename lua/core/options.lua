@@ -16,6 +16,10 @@ vim.bo.softtabstop = 2
 
 vim.g.repl_split = "bottom"
 
+vim.diagnostic.config({
+	virtual_lines = true,
+})
+
 -- Line Wrapping
 opt.wrap = false
 

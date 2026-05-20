@@ -1,5 +1,20 @@
 local M = {}
 
+local state_file = vim.fn.stdpath("state") .. "/lsp-toggle-state"
+
+local function read_state()
+	local ok, lines = pcall(vim.fn.readfile, state_file)
+	if not ok or not lines or #lines == 0 then
+		return false
+	end
+	return vim.trim(lines[1]) == "enabled"
+end
+
+local function write_state(enabled)
+	pcall(vim.fn.mkdir, vim.fn.fnamemodify(state_file, ":h"), "p")
+	pcall(vim.fn.writefile, { enabled and "enabled" or "disabled" }, state_file)
+end
+
 M.servers = {
 	"bashls",
 	"cssls",
@@ -49,6 +64,7 @@ end
 function M.enable(opts)
 	opts = opts or {}
 	vim.g.lsp_enabled = true
+	write_state(true)
 	if vim.diagnostic and vim.diagnostic.enable then
 		vim.diagnostic.enable(true)
 	end
@@ -69,6 +85,7 @@ end
 function M.disable(opts)
 	opts = opts or {}
 	vim.g.lsp_enabled = false
+	write_state(false)
 	for _, server in ipairs(M.servers_to_enable()) do
 		enable_server(server, false)
 	end
@@ -206,16 +223,16 @@ function M.start_jdtls()
 end
 
 function M.setup()
-	vim.g.lsp_enabled = false
+	vim.g.lsp_enabled = read_state()
 	vim.api.nvim_create_user_command("LspOn", function()
 		M.enable()
-	end, { desc = "Enable LSP for this Neovim session" })
+	end, { desc = "Enable LSP persistently" })
 	vim.api.nvim_create_user_command("LspOff", function()
 		M.disable()
-	end, { desc = "Disable LSP for this Neovim session" })
+	end, { desc = "Disable LSP persistently" })
 	vim.api.nvim_create_user_command("LspToggle", function()
 		M.toggle()
-	end, { desc = "Toggle LSP on/off for this Neovim session" })
+	end, { desc = "Toggle LSP on/off persistently" })
 	vim.api.nvim_create_user_command("LspStatus", function()
 		M.status()
 	end, { desc = "Show LSP toggle status" })

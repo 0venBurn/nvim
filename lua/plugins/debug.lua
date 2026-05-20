@@ -162,13 +162,17 @@ return {
 		local dap = require("dap")
 		require("dapui").setup(opts)
 
-		-- Register the Java DAP adapter up front. nvim-jdtls still needs to be
-		-- attached to the Java project for a session to actually start, but this
-		-- prevents `Config references missing adapter "java"` when dap.continue()
-		-- sees the Java configurations before jdtls finishes attaching.
-		pcall(function()
-			require("jdtls.dap").setup_dap({ hotcodereplace = "auto" })
-		end)
+		-- Only touch nvim-jdtls from Java buffers. Requiring `jdtls.dap` here
+		-- during VeryLazy loads the Java plugin for every Neovim session.
+		vim.api.nvim_create_autocmd("FileType", {
+			pattern = "java",
+			group = vim.api.nvim_create_augroup("dap-java-setup", { clear = true }),
+			callback = function()
+				pcall(function()
+					require("jdtls.dap").setup_dap({ hotcodereplace = "auto" })
+				end)
+			end,
+		})
 
 		local mason_debugpy = vim.fn.stdpath("data") .. "/mason/packages/debugpy"
 		local debugpy_python = mason_debugpy .. "/venv/bin/python"

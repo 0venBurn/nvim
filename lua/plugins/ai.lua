@@ -8,6 +8,7 @@ return {
 				enabled = false,
 			},
 			cli = {
+				watch = true,
 				mux = {
 					backend = "tmux",
 					enabled = true,

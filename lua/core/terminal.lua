@@ -48,7 +48,7 @@ function M.open_float()
 end
 
 function M.setup()
-	vim.keymap.set("n", "<leader>j", M.open_float, { desc = "Open floating terminal" })
+	vim.keymap.set("n", "<leader>ot", M.open_float, { desc = "Open floating terminal" })
 	vim.keymap.set("t", "<C-q>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
 end
 
